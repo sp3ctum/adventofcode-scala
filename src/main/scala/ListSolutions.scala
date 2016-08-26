@@ -1,8 +1,8 @@
 import scala.annotation.tailrec
 
-class ListSolutions
+class LastElementOfList
 
-object ListSolutions {
+object LastElementOfList {
   def last[A](l: List[A]) = l.last
 
   def lastRecursive[A](l: List[A]) = {
