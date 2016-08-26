@@ -20,27 +20,26 @@ class LastElementOfListTests extends FunSuite {
   }
 }
 
-class LastButOneElementOfListTests extends FunSuite {
+class OneLinerListSolutionsTests extends FunSuite {
   test("last but one element") {
-    assert(LastButOneElementOfList.penultimate(List(1, 2, 3)) == 2)
+    assert(OneLinerListSolutions.penultimate(List(1, 2, 3)) == 2)
   }
-}
 
-class NthElementOfListTests extends FunSuite {
   test("nth element") {
     val l = List.range(1, 10)
-    assert(NthElementOfList.nth(l, 2) == 3)
+    assert(OneLinerListSolutions.nth(l, 2) == 3)
   }
-}
 
-class NumberOfElementsTests extends FunSuite {
   test("count list length") {
-    assert(NumberOfElements.count(List.range(1, 10)) == 9)
+    assert(OneLinerListSolutions.count(List.range(1, 10)) == 9)
   }
-}
 
-class ReverseListTests extends FunSuite {
   test("reverse list") {
-    assert(ReverseList.reverse(List(1, 2, 3)) == List(3, 2, 1))
+    assert(OneLinerListSolutions.reverse(List(1, 2, 3)) == List(3, 2, 1))
+  }
+
+  test("is a list a palindrome") {
+    assert(OneLinerListSolutions.isPalindrome(List(1, 2, 3, 2, 1)))
+    assert(OneLinerListSolutions.isPalindrome(List(1, 2, 3)) == false)
   }
 }

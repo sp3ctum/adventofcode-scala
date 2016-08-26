@@ -20,22 +20,19 @@ object LastElementOfList {
   }
 }
 
-// P02 (*) Find the last but one element of a list.
-object LastButOneElementOfList {
+object OneLinerListSolutions {
+  // P02 (*) Find the last but one element of a list.
   def penultimate[A](l: List[A]): A = l.init.last
-}
 
-// P03 (*) Find the Kth element of a list.
-object NthElementOfList {
+  // P03 (*) Find the Kth element of a list.
   def nth[A](l: List[A], i: Int): A = l(i)
-}
 
-// P04 (*) Find the number of elements of a list.
-object NumberOfElements {
+  // P04 (*) Find the number of elements of a list.
   def count[A](l: List[A]) = l.length
-}
 
-// P05 (*) Reverse a list.
-object ReverseList {
+  // P05 (*) Reverse a list.
   def reverse[A](l: List[A]) = l.reverse
+
+  // P06 (*) Find out whether a list is a palindrome.
+  def isPalindrome[A](l: List[A]) = l == l.reverse
 }
