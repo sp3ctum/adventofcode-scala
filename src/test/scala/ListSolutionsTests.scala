@@ -42,4 +42,9 @@ class OneLinerListSolutionsTests extends FunSuite {
     assert(OneLinerListSolutions.isPalindrome(List(1, 2, 3, 2, 1)))
     assert(OneLinerListSolutions.isPalindrome(List(1, 2, 3)) == false)
   }
+
+  test("flatten a list of lists") {
+    val nestedList = List(List(1, 2), 3, 4, List(5, 6))
+    assert(OneLinerListSolutions.flatten(nestedList) == List(1, 2, 3, 4, 5, 6))
+  }
 }

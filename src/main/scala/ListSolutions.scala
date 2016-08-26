@@ -35,4 +35,13 @@ object OneLinerListSolutions {
 
   // P06 (*) Find out whether a list is a palindrome.
   def isPalindrome[A](l: List[A]) = l == l.reverse
+
+  // P07 (**) Flatten a nested list structure.
+  def flatten[A](result: List[Any]): List[Any] = {
+    result match {
+      case Nil => result
+      case (l: List[Any]) :: rest => flatten(l) ::: flatten(rest)
+      case (l: Any) :: rest => l :: flatten(rest)
+    }
+  }
 }
