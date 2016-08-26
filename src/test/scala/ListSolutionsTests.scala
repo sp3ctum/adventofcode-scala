@@ -38,3 +38,9 @@ class NumberOfElementsTests extends FunSuite {
     assert(NumberOfElements.count(List.range(1, 10)) == 9)
   }
 }
+
+class ReverseListTests extends FunSuite {
+  test("reverse list") {
+    assert(ReverseList.reverse(List(1, 2, 3)) == List(3, 2, 1))
+  }
+}

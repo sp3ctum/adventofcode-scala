@@ -34,3 +34,8 @@ object NthElementOfList {
 object NumberOfElements {
   def count[A](l: List[A]) = l.length
 }
+
+// P05 (*) Reverse a list.
+object ReverseList {
+  def reverse[A](l: List[A]) = l.reverse
+}
