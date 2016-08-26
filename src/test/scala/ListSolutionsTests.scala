@@ -7,10 +7,9 @@ class ListSolutionsTests extends WordSpec {
     }
 
     "blow up when no elements" in {
-      val exception = intercept[NoSuchElementException] {
+      intercept[NoSuchElementException] {
         ListSolutions.last(List())
       }
-      assert(exception != null)
     }
   }
 }
