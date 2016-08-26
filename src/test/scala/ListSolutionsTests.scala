@@ -32,3 +32,9 @@ class NthElementOfListTests extends FunSuite {
     assert(NthElementOfList.nth(l, 2) == 3)
   }
 }
+
+class NumberOfElementsTests extends FunSuite {
+  test("count list length") {
+    assert(NumberOfElements.count(List.range(1, 10)) == 9)
+  }
+}

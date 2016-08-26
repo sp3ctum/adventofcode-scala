@@ -29,3 +29,8 @@ object LastButOneElementOfList {
 object NthElementOfList {
   def nth[A](l: List[A], i: Int): A = l(i)
 }
+
+// P04 (*) Find the number of elements of a list.
+object NumberOfElements {
+  def count[A](l: List[A]) = l.length
+}
