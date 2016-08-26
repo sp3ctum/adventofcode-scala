@@ -22,8 +22,10 @@ object LastElementOfList {
 
 // P02 (*) Find the last but one element of a list.
 object LastButOneElementOfList {
-  def penultimate[A](l: List[A]): A = {
-    val index = l.length - 2
-    l(index)
-  }
+  def penultimate[A](l: List[A]): A = l.init.last
+}
+
+// P03 (*) Find the Kth element of a list.
+object NthElementOfList {
+  def nth[A](l: List[A], i: Int): A = l(i)
 }

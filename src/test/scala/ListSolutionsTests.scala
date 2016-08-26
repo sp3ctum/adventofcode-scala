@@ -25,3 +25,10 @@ class LastButOneElementOfListTests extends FunSuite {
     assert(LastButOneElementOfList.penultimate(List(1, 2, 3)) == 2)
   }
 }
+
+class NthElementOfListTests extends FunSuite {
+  test("nth element") {
+    val l = List.range(1, 10)
+    assert(NthElementOfList.nth(l, 2) == 3)
+  }
+}
