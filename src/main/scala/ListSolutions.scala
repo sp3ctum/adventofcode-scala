@@ -41,7 +41,7 @@ object OneLinerListSolutions {
     result match {
       case Nil => result
       case (l: List[Any]) :: rest => flatten(l) ::: flatten(rest)
-      case (l: Any) :: rest => l :: flatten(rest)
+      case l :: rest => l :: flatten(rest)
     }
   }
 }
