@@ -1,7 +1,5 @@
 import scala.annotation.tailrec
 
-class LastElementOfList
-
 object LastElementOfList {
   def last[A](l: List[A]) = l.last
 
@@ -21,7 +19,6 @@ object LastElementOfList {
   }
 }
 
-class LastButOneElementOfList
 object LastButOneElementOfList {
   def penultimate[A](l: List[A]): A = {
     val index = l.length - 2
