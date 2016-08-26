@@ -1,27 +1,23 @@
-import org.scalatest.WordSpec
+import org.scalatest.FunSuite
 
-class LastElementOfListTests extends WordSpec {
-  "last element of list" should {
-    "find last element" in {
-      assert(LastElementOfList.last(List(1,2)) == 2)
-    }
+class LastElementOfListTests extends FunSuite {
+  test("last element of list") {
+    assert(LastElementOfList.last(List(1,2)) == 2)
+  }
 
-    "blow up when no elements" in {
-      intercept[NoSuchElementException] {
-        LastElementOfList.last(List())
-      }
+  test("blow up when no elements") {
+    intercept[NoSuchElementException] {
+      LastElementOfList.last(List())
     }
   }
 
-  "last element of list recursively" should {
-    "find last element" in {
-      assert(LastElementOfList.lastRecursive(List(1, 2)) == 2)
-    }
+  test("last element of list recursively") {
+    assert(LastElementOfList.lastRecursive(List(1, 2)) == 2)
   }
 
-  "last element of list recursively, indexed (stupid implementation but good for practice)" should {
-    "find last element" in {
-      assert(LastElementOfList.lastRecursiveIndexed(List(1, 2)) == 2)
-    }
+  test("last element of list recursively, indexed (stupid implementation but good for practice)") {
+    assert(LastElementOfList.lastRecursiveIndexed(List(1, 2)) == 2)
+  }
+}
   }
 }
