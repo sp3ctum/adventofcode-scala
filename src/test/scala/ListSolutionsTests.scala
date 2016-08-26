@@ -47,4 +47,13 @@ class OneLinerListSolutionsTests extends FunSuite {
     val nestedList = List(List(1, 2), 3, 4, List(5, 6))
     assert(OneLinerListSolutions.flatten(nestedList) == List(1, 2, 3, 4, 5, 6))
   }
+
+  test("eliminate duplicates") {
+    assert(OneLinerListSolutions.eliminateDuplicates(List(1)) == List(1))
+    assert(OneLinerListSolutions.eliminateDuplicates(List(1, 2)) == List(1, 2))
+    assert(OneLinerListSolutions.eliminateDuplicates(List(1, 2, 2)) == List(1, 2))
+
+    assert(OneLinerListSolutions.eliminateDuplicates(List(1, 1, 2, 3, 3)) == List(1, 2, 3))
+  }
+
 }

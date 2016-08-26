@@ -44,4 +44,23 @@ object OneLinerListSolutions {
       case l :: rest => l :: flatten(rest)
     }
   }
+
+  // P08 (**) Eliminate consecutive duplicates of list elements.
+  def eliminateDuplicates[A](l: List[A]): List[A] = {
+    @tailrec
+    def eliminate(result: List[A], previousItem: A, remaining: List[A]): List[A] = {
+      remaining match {
+        case Nil => result
+        case x :: rest =>
+          if (previousItem == x)
+            // skip this item
+            eliminate(result, x, rest)
+          else
+            eliminate(x :: result, x, rest)
+      }
+    }
+
+    eliminate(result = List(l.head), previousItem = l.head, remaining = l.tail)
+      .reverse
+  }
 }
