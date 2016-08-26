@@ -1,5 +1,6 @@
 import scala.annotation.tailrec
 
+// P01 (*) Find the last element of a list.
 object LastElementOfList {
   def last[A](l: List[A]) = l.last
 
@@ -19,6 +20,7 @@ object LastElementOfList {
   }
 }
 
+// P02 (*) Find the last but one element of a list.
 object LastButOneElementOfList {
   def penultimate[A](l: List[A]): A = {
     val index = l.length - 2
