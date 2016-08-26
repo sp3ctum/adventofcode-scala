@@ -19,5 +19,9 @@ class LastElementOfListTests extends FunSuite {
     assert(LastElementOfList.lastRecursiveIndexed(List(1, 2)) == 2)
   }
 }
+
+class LastButOneElementOfListTests extends FunSuite {
+  test("last but one element") {
+    assert(LastButOneElementOfList.penultimate(List(1, 2, 3)) == 2)
   }
 }

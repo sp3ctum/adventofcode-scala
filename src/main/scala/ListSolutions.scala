@@ -20,3 +20,11 @@ object LastElementOfList {
     else lastRecursiveIndexed(l.tail, index + 1)
   }
 }
+
+class LastButOneElementOfList
+object LastButOneElementOfList {
+  def penultimate[A](l: List[A]): A = {
+    val index = l.length - 2
+    l(index)
+  }
+}
