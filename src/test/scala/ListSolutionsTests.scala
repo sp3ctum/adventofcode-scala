@@ -102,4 +102,9 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("duplicate a list a given number of times") {
     assert(OneLinerListSolutions.duplicateTimes(List(1, 2), 3) == List(1, 2, 1, 2, 1, 2))
   }
+
+  test("drop every nth element of a list") {
+    assert(OneLinerListSolutions.dropEveryNthElement(List(1, 2), 2) == List(1))
+    assert(OneLinerListSolutions.dropEveryNthElement(List.range(1, 11), 2) == List(1, 3, 5, 7, 9))
+  }
 }

@@ -152,4 +152,11 @@ object OneLinerListSolutions {
   // P15 (**) Duplicate the elements of a list a given number of times.
   def duplicateTimes[T](l: List[T], times: Int): List[T] =
     List.fill(times)(l).flatten
+
+  // P16 (**) Drop every Nth element from a list.
+  def dropEveryNthElement[T](l: List[T], n: Int): List[T] = {
+    l.zipWithIndex.collect{
+      case (x, i) if ((i + 1) % n != 0) => x
+    }
+  }
 }
