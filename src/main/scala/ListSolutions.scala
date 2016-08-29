@@ -1,4 +1,5 @@
 import scala.annotation.tailrec
+import scala.util.Random
 
 // P01 (*) Find the last element of a list.
 object LastElementOfList {
@@ -193,4 +194,14 @@ object OneLinerListSolutions {
 
   // P22 (*) Create a list containing all integers within a given range.
   def range(start: Int, end: Int): List[Int] = List.range(start, end)
+
+  // P23 (**) Extract a given number of randomly selected elements from a list.
+  def randoms[T](source: List[T], count: Int): List[T] = {
+    val random = new Random()
+
+    source.map{_ =>
+      val index = random.nextInt(source.length)
+      source(index)
+    }.toList
+  }
 }

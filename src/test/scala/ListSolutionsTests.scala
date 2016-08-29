@@ -136,4 +136,9 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     assert(OneLinerListSolutions.range(0, 5) == List(0, 1, 2, 3, 4))
   }
 
+  test("extract random numbers from a list") {
+    val list = List(1, 2, 3, 4, 5)
+    val randoms = OneLinerListSolutions.randoms(list, 5)
+    assert(randoms.length == 5)
+  }
 }
