@@ -178,4 +178,10 @@ object OneLinerListSolutions {
                        }
     }
   }
+
+  // P20 (*) Remove the Kth element from a list.
+  def removeAt[T](zeroBasedIndex: Int, l: List[T]): List[T] = {
+    val (before, after) = l.splitAt(zeroBasedIndex + 1)
+    before.init ++ after
+  }
 }

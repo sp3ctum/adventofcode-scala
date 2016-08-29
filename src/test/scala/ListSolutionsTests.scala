@@ -123,4 +123,8 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     assert(OneLinerListSolutions.rotateToLeft(3, "abcdefghijk".toList)
              == "defghijkabc".toList)
   }
+
+  test("remove from list at given index") {
+    assert(OneLinerListSolutions.removeAt(2, List(1, 2, 3, 4)) == List(1, 2, 4))
+  }
 }
