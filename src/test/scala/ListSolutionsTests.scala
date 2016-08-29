@@ -68,4 +68,12 @@ class OneLinerListSolutionsTests extends FunSuite {
                                                                               (1, 3)))
   }
 
+  test("modified run-length encoding") {
+    import OneLinerListSolutions.{RunLengthEncoded, One, Many}
+
+    assert(OneLinerListSolutions.modifiedRunLengthEncoding(List(1)) == List(One(1)))
+    assert(OneLinerListSolutions.modifiedRunLengthEncoding(List(1, 1)) == List(Many(1, 2)))
+    assert(OneLinerListSolutions.modifiedRunLengthEncoding(List(1, 1, 2, 3, 3)) == List(Many(1, 2), One(2), Many(3, 2)))
+  }
+
 }
