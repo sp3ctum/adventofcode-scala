@@ -63,4 +63,15 @@ object OneLinerListSolutions {
     eliminate(result = List(l.head), previousItem = l.head, remaining = l.tail)
       .reverse
   }
+
+  // P09 (**) Pack consecutive duplicates of list elements into sublists.
+  def duplicatesToSublists[T](remaining: List[T]): List[List[T]] = {
+    remaining match {
+      case Nil => Nil
+      case x :: xs => {
+        val (sames, rest) = xs.span{x == _}
+        (x :: sames) :: duplicatesToSublists(rest)
+      }
+    }
+  }
 }

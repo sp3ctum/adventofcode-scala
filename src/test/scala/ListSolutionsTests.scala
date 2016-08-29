@@ -52,8 +52,12 @@ class OneLinerListSolutionsTests extends FunSuite {
     assert(OneLinerListSolutions.eliminateDuplicates(List(1)) == List(1))
     assert(OneLinerListSolutions.eliminateDuplicates(List(1, 2)) == List(1, 2))
     assert(OneLinerListSolutions.eliminateDuplicates(List(1, 2, 2)) == List(1, 2))
-
     assert(OneLinerListSolutions.eliminateDuplicates(List(1, 1, 2, 3, 3)) == List(1, 2, 3))
+  }
+
+  test("duplicates to sublists") {
+    assert(OneLinerListSolutions.duplicatesToSublists(List(1, 2, 2)) == List(List(1), List(2, 2)))
+    assert(OneLinerListSolutions.duplicatesToSublists(List(1, 1, 2, 3, 3)) == List(List(1, 1), List(2), List(3, 3)))
   }
 
 }
