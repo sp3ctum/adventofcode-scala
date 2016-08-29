@@ -111,6 +111,6 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("split a list into two parts") {
     val input = "abcdefghijk"
     assert(OneLinerListSolutions.splitIntoTwoParts(3, input)
-             == ("abc".toList, "defghijk".toList))
+             == (("abc".toList, "defghijk".toList)))
   }
 }
