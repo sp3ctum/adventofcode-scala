@@ -69,9 +69,15 @@ object OneLinerListSolutions {
     remaining match {
       case Nil => Nil
       case x :: xs => {
-        val (sames, rest) = xs.span{x == _}
+        val (sames, rest) = xs span{x == _}
         (x :: sames) :: duplicatesToSublists(rest)
       }
     }
+  }
+
+  // P10 (*) Run-length encoding of a list.
+  def runLengthEncode[T](l: List[T]): List[(Int, T)] = {
+    duplicatesToSublists(l)
+      .map(groupOfItems => (groupOfItems.length, groupOfItems.head))
   }
 }

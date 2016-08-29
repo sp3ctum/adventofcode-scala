@@ -60,4 +60,12 @@ class OneLinerListSolutionsTests extends FunSuite {
     assert(OneLinerListSolutions.duplicatesToSublists(List(1, 1, 2, 3, 3)) == List(List(1, 1), List(2), List(3, 3)))
   }
 
+  test("run-length encoding") {
+    assert(OneLinerListSolutions.runLengthEncode(List(1)) == List((1, 1)))
+    assert(OneLinerListSolutions.runLengthEncode(List(1, 1)) == List((2, 1)))
+    assert(OneLinerListSolutions.runLengthEncode(List(1, 1, 2, 2, 3)) == List((2, 1),
+                                                                              (2, 2),
+                                                                              (1, 3)))
+  }
+
 }
