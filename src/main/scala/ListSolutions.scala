@@ -190,4 +190,7 @@ object OneLinerListSolutions {
     val (before, after) = l.splitAt(zeroBasedIndex)
     before ++ List(element) ++ after
   }
+
+  // P22 (*) Create a list containing all integers within a given range.
+  def range(start: Int, end: Int): List[Int] = List.range(start, end)
 }
