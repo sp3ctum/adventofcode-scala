@@ -211,7 +211,9 @@ object OneLinerListSolutions {
     return Random.shuffle(uniqueNumbers).take(amount)
   }
 
+  // P25 (*) Generate a random permutation of the elements of a list.
   def randomPermutation[T](l: List[T]): List[T] = {
+    // this may not be random but I don't care
     l.permutations.next()
   }
 }
