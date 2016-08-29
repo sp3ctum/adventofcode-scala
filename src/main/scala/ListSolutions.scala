@@ -162,4 +162,7 @@ object OneLinerListSolutions {
 
   // P17 (*) Split a list into two parts.
   def splitIntoTwoParts[T](n: Int, s: IndexedSeq[T]) = s.splitAt(n)
+
+  // P18 (**) Extract a slice from a list.
+  def slice[T](start: Int, end: Int, l: List[T]): List[T] = l.slice(start, end)
 }

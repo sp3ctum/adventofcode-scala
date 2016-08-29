@@ -113,4 +113,8 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     assert(OneLinerListSolutions.splitIntoTwoParts(3, input)
              == (("abc".toList, "defghijk".toList)))
   }
+
+  test("slice a list") {
+    assert(OneLinerListSolutions.slice(0, 1, List(1, 2)) == List(1))
+  }
 }
