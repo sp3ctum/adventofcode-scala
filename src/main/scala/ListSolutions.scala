@@ -159,4 +159,7 @@ object OneLinerListSolutions {
       case (x, i) if ((i + 1) % n != 0) => x
     }
   }
+
+  // P17 (*) Split a list into two parts.
+  def splitIntoTwoParts[T](n: Int, s: IndexedSeq[T]) = s.splitAt(n)
 }

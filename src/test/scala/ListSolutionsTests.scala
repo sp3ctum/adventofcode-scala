@@ -107,4 +107,10 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     assert(OneLinerListSolutions.dropEveryNthElement(List(1, 2), 2) == List(1))
     assert(OneLinerListSolutions.dropEveryNthElement(List.range(1, 11), 2) == List(1, 3, 5, 7, 9))
   }
+
+  test("split a list into two parts") {
+    val input = "abcdefghijk"
+    assert(OneLinerListSolutions.splitIntoTwoParts(3, input)
+             == ("abc".toList, "defghijk".toList))
+  }
 }
