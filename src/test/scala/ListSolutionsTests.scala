@@ -76,4 +76,8 @@ class OneLinerListSolutionsTests extends FunSuite {
     assert(OneLinerListSolutions.modifiedRunLengthEncoding(List(1, 1, 2, 3, 3)) == List(Many(1, 2), One(2), Many(3, 2)))
   }
 
+  test("run-length decoding") {
+    assert(OneLinerListSolutions.decodeRunLengthEncoded(List((3, 1))) == List(1, 1, 1))
+    assert(OneLinerListSolutions.decodeRunLengthEncoded(List((3, 1), (2, 2), (1, 3))) == List(1, 1, 1, 2, 2, 3))
+  }
 }
