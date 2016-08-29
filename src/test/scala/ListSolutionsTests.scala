@@ -98,4 +98,8 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("duplicate a list") {
     assert(OneLinerListSolutions.duplicate(List(1, 2)) == List(1, 2, 1, 2))
   }
+
+  test("duplicate a list a given number of times") {
+    assert(OneLinerListSolutions.duplicateTimes(List(1, 2), 3) == List(1, 2, 1, 2, 1, 2))
+  }
 }

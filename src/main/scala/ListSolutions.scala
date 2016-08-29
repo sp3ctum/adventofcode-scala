@@ -149,4 +149,7 @@ object OneLinerListSolutions {
   // P14 (*) Duplicate the elements of a list.
   def duplicate[T](l: List[T]): List[T] = l ::: l
 
+  // P15 (**) Duplicate the elements of a list a given number of times.
+  def duplicateTimes[T](l: List[T], times: Int): List[T] =
+    List.fill(times)(l).flatten
 }
