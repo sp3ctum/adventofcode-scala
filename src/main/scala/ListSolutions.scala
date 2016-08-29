@@ -204,4 +204,10 @@ object OneLinerListSolutions {
       source(index)
     }.toList
   }
+
+  // P24 (*) Lotto: Draw N different random numbers from the set 1..M.
+  def lotto(amount: Int, poolSize: Int): List[Int] = {
+    val uniqueNumbers = (1 to poolSize).toSet.toList
+    return Random.shuffle(uniqueNumbers).take(amount)
+  }
 }

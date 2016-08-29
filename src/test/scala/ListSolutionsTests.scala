@@ -141,4 +141,12 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     val randoms = OneLinerListSolutions.randoms(list, 5)
     assert(randoms.length == 5)
   }
+
+  test("Lotto: draw N different random numbers from a list") {
+    val result = OneLinerListSolutions.lotto(100, 100)
+
+    // All values should be different.
+    // Should also have all values present.
+    assert(result.toSet == (1 to 100).toSet)
+  }
 }
