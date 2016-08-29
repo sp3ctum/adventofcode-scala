@@ -145,4 +145,8 @@ object OneLinerListSolutions {
     encode(List(), l.tail, l.head, successiveItemsCount = 1)
       .reverse
   }
+
+  // P14 (*) Duplicate the elements of a list.
+  def duplicate[T](l: List[T]): List[T] = l ::: l
+
 }

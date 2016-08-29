@@ -85,12 +85,17 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   }
 
   test("run-length encoding (direct version)") {
-    failAfter(1 second) {
+    failAfter(1 second) { // guard against an endless loop, never failed while
+                          // writing though
       assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1)) == List((1, 1)))
       assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 2)) == List((1, 1), (1, 2)))
 
       assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 1, 1, 1)) == List((4, 1)))
       assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 2, 2, 3)) == List((1, 1), (2, 2), (1, 3)))
     }
+  }
+
+  test("duplicate a list") {
+    assert(OneLinerListSolutions.duplicate(List(1, 2)) == List(1, 2, 1, 2))
   }
 }
