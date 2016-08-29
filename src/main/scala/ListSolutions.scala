@@ -210,4 +210,8 @@ object OneLinerListSolutions {
     val uniqueNumbers = (1 to poolSize).toSet.toList
     return Random.shuffle(uniqueNumbers).take(amount)
   }
+
+  def randomPermutation[T](l: List[T]): List[T] = {
+    l.permutations.next()
+  }
 }

@@ -146,7 +146,11 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
     val result = OneLinerListSolutions.lotto(100, 100)
 
     // All values should be different.
-    // Should also have all values present.
+    // Should also have all values present, since 100 different numbers from 100 is 100.
     assert(result.toSet == (1 to 100).toSet)
+  }
+
+  test("random permutation of a list") {
+    assert(OneLinerListSolutions.randomPermutation(List(1, 2, 3)).length == 3)
   }
 }
