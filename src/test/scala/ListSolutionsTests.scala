@@ -117,4 +117,10 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("slice a list") {
     assert(OneLinerListSolutions.slice(0, 1, List(1, 2)) == List(1))
   }
+
+  test("rotate list to the left") {
+    // this one is from the example
+    assert(OneLinerListSolutions.rotateToLeft(3, "abcdefghijk".toList)
+             == "defghijkabc".toList)
+  }
 }
