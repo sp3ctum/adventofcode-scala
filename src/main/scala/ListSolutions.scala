@@ -113,4 +113,36 @@ object OneLinerListSolutions {
           })
       .flatten
   }
+
+  // P13 (**) Run-length encoding of a list (direct solution).
+  //   Implement the so-called run-length encoding data compression method
+  //   directly. I.e. don't use other methods you've written (like P09's pack);
+  //   do all the work directly.
+
+  //   Example:
+  // scala> encodeDirect(List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e))
+  // res0: List[(Int, Symbol)] = List((4,'a), (1,'b), (2,'c), (2,'a), (1,'d), (4,'e))
+  //
+  def runLengthEncodeDirectSolution[T](l: List[T]): List[(Int, T)] = {
+    // Seems like this requires a solution that's not optimal;
+    // Meaning it must do everything in the same loop instead of using higher
+    // order functions like my version of runLengthEncode.
+    def encode(result: List[(Int, T)],
+               remaining: List[T],
+               previousItem: T,
+               successiveItemsCount: Int): List[(Int, T)] = {
+      remaining match {
+        case Nil => (successiveItemsCount, previousItem) :: result
+        case newItem :: rest =>
+          if (newItem == previousItem)
+            encode(result, rest, previousItem, successiveItemsCount + 1)
+          else {
+            val newResult = (successiveItemsCount, previousItem) :: result
+            encode(newResult, rest, newItem, 1)
+          }
+      }
+    }
+    encode(List(), l.tail, l.head, successiveItemsCount = 1)
+      .reverse
+  }
 }

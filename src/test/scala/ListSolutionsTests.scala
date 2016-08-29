@@ -1,6 +1,9 @@
 import org.scalatest.FunSuite
+import org.scalatest.concurrent.Timeouts
+import org.scalatest.time.SpanSugar._
 
 class LastElementOfListTests extends FunSuite {
+
   test("last element of list") {
     assert(LastElementOfList.last(List(1,2)) == 2)
   }
@@ -20,7 +23,7 @@ class LastElementOfListTests extends FunSuite {
   }
 }
 
-class OneLinerListSolutionsTests extends FunSuite {
+class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("last but one element") {
     assert(OneLinerListSolutions.penultimate(List(1, 2, 3)) == 2)
   }
@@ -79,5 +82,15 @@ class OneLinerListSolutionsTests extends FunSuite {
   test("run-length decoding") {
     assert(OneLinerListSolutions.decodeRunLengthEncoded(List((3, 1))) == List(1, 1, 1))
     assert(OneLinerListSolutions.decodeRunLengthEncoded(List((3, 1), (2, 2), (1, 3))) == List(1, 1, 1, 2, 2, 3))
+  }
+
+  test("run-length encoding (direct version)") {
+    failAfter(1 second) {
+      assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1)) == List((1, 1)))
+      assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 2)) == List((1, 1), (1, 2)))
+
+      assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 1, 1, 1)) == List((4, 1)))
+      assert(OneLinerListSolutions.runLengthEncodeDirectSolution(List(1, 2, 2, 3)) == List((1, 1), (2, 2), (1, 3)))
+    }
   }
 }
