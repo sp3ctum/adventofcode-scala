@@ -153,4 +153,8 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("random permutation of a list") {
     assert(OneLinerListSolutions.randomPermutation(List(1, 2, 3)).length == 3)
   }
+
+  test("all combinations of distinct objects") {
+    assert(OneLinerListSolutions.combinations(List(1, 2, 3)).length == 6)
+  }
 }

@@ -216,4 +216,7 @@ object OneLinerListSolutions {
     // this may not be random but I don't care
     l.permutations.next()
   }
+
+  // P26 (**) Generate the combinations of K distinct objects chosen from the N elements of a list.
+  def combinations[T](l: List[T]): List[List[T]] = l.permutations.toList
 }
