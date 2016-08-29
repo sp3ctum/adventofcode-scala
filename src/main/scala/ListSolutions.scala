@@ -184,4 +184,10 @@ object OneLinerListSolutions {
     val (before, after) = l.splitAt(zeroBasedIndex + 1)
     before.init ++ after
   }
+
+  // P21 (*) Insert an element at a given position into a list.
+  def insertAt[T](zeroBasedIndex: Int, l: List[T], element: T): List[T] = {
+    val (before, after) = l.splitAt(zeroBasedIndex)
+    before ++ List(element) ++ after
+  }
 }

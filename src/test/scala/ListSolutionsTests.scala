@@ -127,4 +127,8 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("remove from list at given index") {
     assert(OneLinerListSolutions.removeAt(2, List(1, 2, 3, 4)) == List(1, 2, 4))
   }
+
+  test("insert at given index") {
+    assert(OneLinerListSolutions.insertAt(2, List(1, 2, 3, 4), 2) == List(1, 2, 2, 3, 4))
+  }
 }
