@@ -16,12 +16,29 @@ class DirectionsTests extends FunSuite {
   test("calculating destination floor") {
     assert(Directions.CalculateFloor(List(Up(), Down())) == 0)
   }
+
+  test("calculate direction entering specific level") {
+    val toLevel = Directions.CalculateDirectionEnteringLevel _
+
+    // These are from the example
+    //
+    // ) causes him to enter the basement at character position 1.
+    // ()()) causes him to enter the basement at character position 5.
+    assert(toLevel(Directions.Parse(")"), -1) == 1)
+    assert(toLevel(Directions.Parse("()())"), -1) == 5)
+  }
 }
 
 class SolutionTests extends BaseSolutionTests {
   test("solution for Day1") {
     dontRunSolutionAutomatically {
-      Solution.Calculate()
+      Solution.CalculateFinalFloor()
+    }
+  }
+
+  test("additional solution") {
+    dontRunSolutionAutomatically {
+      Solution.CalculateDirectionIndexThatEntersLevel(-1)
     }
   }
 }

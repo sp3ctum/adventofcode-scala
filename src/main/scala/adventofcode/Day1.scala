@@ -37,38 +37,78 @@ abstract class Direction
 case class Up() extends Direction
 case class Down() extends Direction
 
-object Directions {
-  def DeduceFloor(input: String): Int = {
-    val directions = Parse(input)
-    CalculateFloor(directions)
-  }
+case class SantasJourneyStatus(takenDirections: List[Direction] = List(),
+                               currentFloor: Int = 0)
 
+object Directions {
   def CalculateFloor(directions: List[Direction]): Int = {
     directions
-      .map{_ match {
-             case Up() => 1
-             case Down() => -1
-           }}
+      .map(DirectionToInt)
       .sum
+  }
+
+  private def DirectionToInt(d: Direction): Int = {
+    d match {
+      case Up() => 1
+      case Down() => -1
+    }
+  }
+
+  def CalculateDirectionEnteringLevel(directions: List[Direction], level: Int): Int = {
+    val changes = FloorChanges(directions)
+    changes.zipWithIndex.filter {
+      case (status, index) => status.currentFloor == level
+    }.head._2
+  }
+
+  private def FloorChanges(directions: List[Direction]): List[SantasJourneyStatus] = {
+    directions.scanLeft(SantasJourneyStatus())(
+      (result, newDirection) => {
+        result.copy(takenDirections = result.takenDirections :+ newDirection,
+                    currentFloor = result.currentFloor + DirectionToInt(newDirection))
+      })
   }
 
   def Parse(input: String): List[Direction] = {
     input.map{_ match {
                 case '(' => Up()
                 case ')' => Down()
-              }}.toList
+              }}
+      .toList
   }
 }
 
 object Solution {
-  def Calculate(): Int = {
+  def CalculateFinalFloor(): Int = {
     val input = ReadInput()
-    Directions.DeduceFloor(input)
+    val directions = Directions.Parse(input)
+    Directions.CalculateFloor(directions)
   }
 
   def ReadInput(): String = {
     val url = getClass().getResource("/Day1.txt")
     val input = Source.fromURL(url)
     input.bufferedReader.readLine()
+  }
+
+  // --- Part Two ---
+  //
+  // Now, given the same instructions, find the position of the first character
+  // that causes him to enter the basement (floor -1). The first character in the
+  // instructions has position 1, the second character has position 2, and so on.
+  //
+  // For example:
+  //
+  // ) causes him to enter the basement at character position 1.
+  // ()()) causes him to enter the basement at character position 5.
+  //
+  // What is the position of the character that causes Santa to first enter the
+  // basement?
+  //
+  // personal note: the result should be 1-based
+  def CalculateDirectionIndexThatEntersLevel(level: Int): Int = {
+    val input = Solution.ReadInput()
+    val directions = Directions.Parse(input)
+    Directions.CalculateDirectionEnteringLevel(directions, level)
   }
 }
