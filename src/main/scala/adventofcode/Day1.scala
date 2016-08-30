@@ -80,15 +80,9 @@ object Directions {
 
 object Solution {
   def CalculateFinalFloor(): Int = {
-    val input = ReadInput()
+    val input = InputReader.ReadInput("/Day1.txt")
     val directions = Directions.Parse(input)
     Directions.CalculateFloor(directions)
-  }
-
-  def ReadInput(): String = {
-    val url = getClass().getResource("/Day1.txt")
-    val input = Source.fromURL(url)
-    input.bufferedReader.readLine()
   }
 
   // --- Part Two ---
@@ -107,7 +101,7 @@ object Solution {
   //
   // personal note: the result should be 1-based
   def CalculateDirectionIndexThatEntersLevel(level: Int): Int = {
-    val input = Solution.ReadInput()
+    val input = InputReader.ReadInput("/Day1.txt")
     val directions = Directions.Parse(input)
     Directions.CalculateDirectionEnteringLevel(directions, level)
   }
