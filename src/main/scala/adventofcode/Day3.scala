@@ -47,10 +47,13 @@ object SantaPosition {
 
 
 object TravelLog {
-  def AmountOfHousesVisitedAtLeastOnce(route: List[SantaDirection]): Int = {
+  def HousesVisitedAtLeastOnce(route: List[SantaDirection]): Set[SantaPosition] = {
     val houses = VisitedHouses(route)
-    houses.toSet.size
+    houses.toSet
   }
+
+  def AmountOfHousesVisitedAtLeastOnce(route: List[SantaDirection]): Int =
+    HousesVisitedAtLeastOnce(route).size
 
   // note: santa will start his journey from the origin (0,0) point
   // the X axis increases to the right, and the Y axis upward
@@ -74,15 +77,53 @@ object TravelLog {
 }
 
 object Day3Solution {
-  def AmountOfHousesVisitedAtLeastOnce(): Int = {
+  def HousesVisitedAtLeastOnce(): Int = {
     val route = GetDirections()
-    TravelLog.AmountOfHousesVisitedAtLeastOnce(route)
+    TravelLog.HousesVisitedAtLeastOnce(route).size
   }
 
-  private def GetDirections(): List[SantaDirection] = {
+  def GetDirections(): List[SantaDirection] = {
     val input = ReadInput()
     input.map(SantaDirection.Parse).toList
   }
 
   private def ReadInput(): String = InputReader.ReadInput("/Day3.txt")
+
+  // --- Part Two ---
+  //
+  // The next year, to speed up the process, Santa creates a robot version of
+  // himself, Robo-Santa, to deliver presents with him.
+  //
+  // Santa and Robo-Santa start at the same location (delivering two presents to
+  // the same starting house), then take turns moving based on instructions from
+  // the elf, who is eggnoggedly reading from the same script as the previous
+  // year.
+  //
+  // This year, how many houses receive at least one present?
+  //
+  // For example:
+  //
+  // ^v delivers presents to 3 houses, because Santa goes north, and then
+  // Robo-Santa goes south.
+  //
+  // ^>v< now delivers presents to 3 houses, and Santa and Robo-Santa end up
+  // back where they started.
+  //
+  // ^v^v^v^v^v now delivers presents to 11 houses, with Santa going one
+  // direction and Robo-Santa going the other.
+
+  def HousesVisitedBySantaAndRoboSanta(): Int = {
+    // because we aren't interested in who walks what route, we can calculate
+    // them together
+    val routes = GetDirections().zipWithIndex
+
+    val santaRoutes = routes.collect({case (d, index) if index % 2 == 0 => d})
+    val roboRoutes = routes.collect({case (d, index) if index % 2 != 0 => d})
+
+    val santaHouses = TravelLog.HousesVisitedAtLeastOnce(santaRoutes)
+    val roboHouses = TravelLog.HousesVisitedAtLeastOnce(roboRoutes)
+
+    santaHouses.union(roboHouses).size
+  }
+
 }

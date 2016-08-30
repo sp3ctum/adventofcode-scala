@@ -41,8 +41,15 @@ class Day3Tests extends FunSuite {
 class Day3SolutionTests extends BaseSolutionTests {
   test("get number of houses visited") {
     dontRunSolutionAutomatically {
-      Day3Solution.AmountOfHousesVisitedAtLeastOnce()
+      Day3Solution.HousesVisitedAtLeastOnce()
       // res191: Int = 2081
+    }
+  }
+
+  test("get number of houses visited for santa and robo-santa") {
+    dontRunSolutionAutomatically {
+      Day3Solution.HousesVisitedBySantaAndRoboSanta()
+      // res202: Int = 2341
     }
   }
 }
