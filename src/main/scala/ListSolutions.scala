@@ -171,7 +171,6 @@ object OneLinerListSolutions {
   def rotateToLeft[T](n: Int, l: List[T]): List[T] = {
     val input = l.toVector // optimization
 
-    println(s"there are ${input.length} elements")
     l.zipWithIndex.map{case (x, index) => {
                          // overflow will go around and search from the beginning / end
                          val newIndex = (index + n) % input.length
