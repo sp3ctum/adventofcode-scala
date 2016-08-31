@@ -25,6 +25,23 @@ class Day4SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       val key = Day4Solution.CreateHashForSecretKey(Day4Solution.Input)
       // key: Int = 346386
+      // took about a second on this lenovo thinkpad p50 with this cpu:
+
+     // *-cpu
+     //      description: CPU
+     //      product: Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz
+     //      vendor: Intel Corp.
+     //      physical id: 7
+     //      bus info: cpu@0
+     //      version: Intel(R) Core(TM) i7-6820HQ CPU @ 2.70GHz
+     //      serial: None
+     //      slot: U3E1
+     //      size: 3344MHz
+     //      capacity: 4005MHz
+     //      width: 64 bits
+     //      clock: 100MHz
+     //      capabilities: [...]
+     //      configuration: cores=4 enabledcores=4 threads=8
 
       assert(MD5.md5AsString(Day4Solution.Input + key).startsWith("00000"))
     }
