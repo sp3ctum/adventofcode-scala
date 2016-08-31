@@ -38,11 +38,42 @@ class Day5Tests extends FunSuite {
   }
 }
 
+class Day5Part2Tests extends FunSuite {
+  test("pair of letters without overlapping") {
+    val hasPair = NiceStringDeterminer2.ContainsPairOfLettersWithoutOverlapping _
+    assert(hasPair("xyxy"))
+    assert(hasPair("aabcdefgaa"))
+
+    assert(! hasPair("aaa"))
+  }
+
+  test("letter repeating with one letter in between") {
+    assert(NiceStringDeterminer2.ContainsLetterRepeatingWithOneLetterInBetween("xyx"))
+    assert(NiceStringDeterminer2.ContainsLetterRepeatingWithOneLetterInBetween("abcdefeghi"))
+    assert(NiceStringDeterminer2.ContainsLetterRepeatingWithOneLetterInBetween("aaa"))
+  }
+
+  test("niceness (both rules together)") {
+    assert(NiceStringDeterminer2.IsNice("qjhvhtzxzqqjkmpb"))
+    assert(NiceStringDeterminer2.IsNice("xxyxx"))
+
+    assert(! NiceStringDeterminer2.IsNice("uurcxstgmygtbstg"))
+    assert(! NiceStringDeterminer2.IsNice("ieodomkazucvgmuy"))
+  }
+}
+
 class Day5SolutionTests extends BaseSolutionTests {
   test("how many strings in the input are nice?") {
     dontRunSolutionAutomatically {
       Day5Solution.HowManyStringsAreNice()
       // res326: Int = 258
+    }
+  }
+
+  test("niceness part 2") {
+    dontRunSolutionAutomatically {
+      Day5Solution.HowManyStringsAreNicePart2()
+      // res337: Int = 53
     }
   }
 }
