@@ -23,7 +23,7 @@ class Day4Tests extends FunSuite {
 class Day4SolutionTests extends BaseSolutionTests {
   test("first solution: create an md5 hash with five leading 0's") {
     dontRunSolutionAutomatically {
-      val key = Day4Solution.CreateHashForSecretKey(Day4Solution.Input)
+      val key = Day4Solution.CreateHashForSecretKey(Day4Solution.Input, 5)
       // key: Int = 346386
       // took about a second on this lenovo thinkpad p50 with this cpu:
 
@@ -44,6 +44,16 @@ class Day4SolutionTests extends BaseSolutionTests {
      //      configuration: cores=4 enabledcores=4 threads=8
 
       assert(MD5.md5AsString(Day4Solution.Input + key).startsWith("00000"))
+    }
+  }
+
+  test("second solution: 6 zeroes this time") {
+    dontRunSolutionAutomatically{
+      val key = Day4Solution.CreateHashForSecretKey(Day4Solution.Input, 6)
+      // key: Int = 9958218
+      // took about 6 seconds this time
+
+      assert(MD5.md5AsString(Day4Solution.Input + key).startsWith("000000"))
     }
   }
 }

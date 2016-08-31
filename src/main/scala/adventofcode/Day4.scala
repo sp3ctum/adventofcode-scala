@@ -40,7 +40,7 @@ object MD5 {
 
 object Day4Solution {
   def Input: String = "iwrupvqb"
-  def CreateHashForSecretKey(secret: String = Input): Int = {
+  def CreateHashForSecretKey(secret: String = Input, startingZeroCount: Int): Int = {
 
     // limit the computation until I know how fast it takes for a small set
     val numberGroups = Iterator.from(1).grouped(1000)
@@ -49,7 +49,7 @@ object Day4Solution {
       group.par.filter {number =>
         val key = secret + number
         val hash = MD5.md5(key)
-        StartsWithZeroes(5, hash)
+        StartsWithZeroes(startingZeroCount, hash)
       }
     }
 
