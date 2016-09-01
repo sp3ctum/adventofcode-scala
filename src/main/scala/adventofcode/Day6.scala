@@ -30,10 +30,11 @@
 case class LightCoordinate(x: Int, y: Int)
 
 case class LightCoordinateRange(start: LightCoordinate, end: LightCoordinate) {
-  def contains(c: LightCoordinate): Boolean = {
-    val containsX = c.x >= start.x && c.x <= end.x
-    val containsY = c.y >= start.y && c.y <= end.y
-    containsX && containsY
+  def elements(): List[LightCoordinate] = {
+    for (y <- (start.y to end.y).toList;
+         x <- (start.x to end.x).toList) yield {
+      LightCoordinate(x, y)
+    }
   }
 }
 
@@ -83,20 +84,18 @@ object LightGridManipulator {
   private def set(action: Boolean => Boolean,
                   targetLocation: LightCoordinateRange,
                   grid: LightGrid): LightGrid = {
-    val changedLights = grid.collect{
-      case (coordinate, onOrOff) if targetLocation.contains(coordinate) =>
-        (coordinate, action(onOrOff))
+    val changedLights = targetLocation.elements.map{
+      case coord @ LightCoordinate(x,y) => {
+        val light = grid.getOrElse(LightCoordinate(x,y), false)
+        (coord, action(light))
+      }
     }
     // overwrite the old lights with changedLights
     grid ++ changedLights
   }
 
-  val initialGrid: LightGrid = {
-    (for (x <- (1 to 1000);
-          y <- (1 to 1000)) yield
-       (LightCoordinate(x, y), false))
-      .toMap
-  }
+  val initialGrid: LightGrid = Map()
+
 }
 
 object Day6Solution {

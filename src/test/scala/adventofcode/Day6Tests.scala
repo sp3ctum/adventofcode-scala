@@ -15,16 +15,15 @@ class Day6Tests extends FunSuite {
                                             LightCoordinate(564,900))))
   }
 
-  test("is a coordinate contained in a range") {
-    val range = LightCoordinateRange(LightCoordinate(1,1), LightCoordinate(2,2))
-    assert(range.contains(LightCoordinate(1,1)))
-    assert(range.contains(LightCoordinate(1,2)))
-    assert(range.contains(LightCoordinate(2,1)))
-    assert(range.contains(LightCoordinate(2,2)))
+  test("get coordinates in a range") {
+    val range = LightCoordinateRange(LightCoordinate(1,1),
+                                     LightCoordinate(3,1))
 
-    assert(! range.contains(LightCoordinate(3,2)))
-    assert(! range.contains(LightCoordinate(2,3)))
-    assert(! range.contains(LightCoordinate(3,3)))
+    val coordinates = range.elements()
+
+    assert(coordinates == List(LightCoordinate(1,1),
+                               LightCoordinate(2,1),
+                               LightCoordinate(3,1)))
   }
 
   test("turn lights on") {
@@ -36,7 +35,7 @@ class Day6Tests extends FunSuite {
     assert(grid(LightCoordinate(2,2)) == true)
 
     // off limits should be untouched
-    assert(grid(LightCoordinate(3,2)) == false)
+    assert(grid.getOrElse(LightCoordinate(3,2), false) == false)
   }
 
   test("turn lights off") {
@@ -61,6 +60,8 @@ class Day6SolutionTests extends BaseSolutionTests {
   test("how many lights are on after all instructions?") {
     dontRunSolutionAutomatically {
       Day6Solution.HowManyLightsAreLitAfterInstructions()
+      // res2: Int = 543903
+      // took about 20 seconds to calculate though
     }
   }
 }
