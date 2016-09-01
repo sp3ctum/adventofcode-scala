@@ -68,6 +68,7 @@ object LightInstruction {
 
 object LightGridManipulator {
   type LightGrid = Map[LightCoordinate,Boolean]
+  val initialGrid: LightGrid = Map()
 
   def process(instructions: Array[LightInstruction]): LightGrid = {
     instructions.foldLeft(initialGrid)(process)
@@ -81,21 +82,16 @@ object LightGridManipulator {
     }
   }
 
-  private def set(action: Boolean => Boolean,
-                  targetLocation: LightCoordinateRange,
-                  grid: LightGrid): LightGrid = {
-    val changedLights = targetLocation.elements.map{
-      case coord @ LightCoordinate(x,y) => {
-        val light = grid.getOrElse(LightCoordinate(x,y), false)
-        (coord, action(light))
-      }
+  private def set[T](action: Boolean => Boolean,
+                     targetLocation: LightCoordinateRange,
+                     grid: LightGrid): LightGrid = {
+    val changedLights = targetLocation.elements.map{coord =>
+      val light = grid.getOrElse(coord, false)
+      (coord, action(light))
     }
     // overwrite the old lights with changedLights
     grid ++ changedLights
   }
-
-  val initialGrid: LightGrid = Map()
-
 }
 
 object Day6Solution {
