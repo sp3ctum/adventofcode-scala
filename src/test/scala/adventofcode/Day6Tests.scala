@@ -1,6 +1,6 @@
 import org.scalatest.FunSuite
 
-class Day6Tests extends FunSuite {
+class Day6LightTests extends FunSuite {
   test("parsing instructions") {
     assert(LightInstruction.parse("toggle 461,550 through 564,900") ==
              LightsToggle(LightCoordinateRange(LightCoordinate(461,550),
@@ -25,7 +25,9 @@ class Day6Tests extends FunSuite {
                                LightCoordinate(2,1),
                                LightCoordinate(3,1)))
   }
+}
 
+class Day6BooleanLightManipulatorTests extends FunSuite {
   test("turn lights on") {
     val grid = process("turn on 1,1 through 2,2")
 
@@ -48,11 +50,41 @@ class Day6Tests extends FunSuite {
     assert(grid(LightCoordinate(2,2)) == false)
   }
 
-  val emptyGrid = LightGridManipulator.initialGrid
+  val emptyGrid = BooleanLightGridManipulator.initialGrid
 
-  def process(rawInstructions: String*): LightGridManipulator.LightGrid = {
+  def process(rawInstructions: String*): BooleanLightGridManipulator.LightGrid = {
     val instructions = rawInstructions.map(LightInstruction.parse).toArray
-    LightGridManipulator.process(instructions)
+    BooleanLightGridManipulator.process(instructions)
+  }
+}
+
+class Day6BrightnessLightManipulatorTests extends FunSuite {
+  test("turn lights on once") {
+    val grid = process("turn on 1,1 through 1,1")
+    assert(grid(LightCoordinate(1,1)) == 1)
+  }
+
+  test("turn lights on twice") {
+    val grid = process("turn on 1,1 through 1,1",
+                       "turn on 1,1 through 1,1")
+    assert(grid(LightCoordinate(1,1)) == 2)
+  }
+
+  test("turning lights off should limit brightness at 0") {
+    val grid = process("turn off 1,1 through 1,1")
+    assert(grid(LightCoordinate(1,1)) == 0)
+  }
+
+  test("toggling light will increase brightness by 2") {
+    val grid = process("toggle 1,1 through 1,1")
+    assert(grid(LightCoordinate(1,1)) == 2)
+  }
+
+  val emptyGrid = BooleanLightGridManipulator.initialGrid
+
+  def process(rawInstructions: String*): BrightnessLightGridManipulator.LightGrid = {
+    val instructions = rawInstructions.map(LightInstruction.parse).toArray
+    BrightnessLightGridManipulator.process(instructions)
   }
 }
 
@@ -61,7 +93,15 @@ class Day6SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day6Solution.HowManyLightsAreLitAfterInstructions()
       // res2: Int = 543903
-      // took about 20 seconds to calculate though
+      // Took about 20 seconds to calculate though
+    }
+  }
+
+  test("how many lights are on after second set of instructions?") {
+    dontRunSolutionAutomatically {
+      Day6Solution.AmountOfLightBrightnessAfterSecondSetofInstructions()
+      // res4: Int = 14687245
+      // Runinng this took about a little longer.
     }
   }
 }

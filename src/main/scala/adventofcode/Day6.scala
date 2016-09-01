@@ -66,38 +66,54 @@ object LightInstruction {
   }
 }
 
-object LightGridManipulator {
-  type LightGrid = Map[LightCoordinate,Boolean]
+abstract class LightGridManipulator[T](defaultValue: T) {
+  type LightGrid = Map[LightCoordinate,T]
   val initialGrid: LightGrid = Map()
 
   def process(instructions: Array[LightInstruction]): LightGrid = {
     instructions.foldLeft(initialGrid)(process)
   }
 
-  private def process(grid: LightGrid, instruction: LightInstruction): LightGrid = {
-    instruction match {
-      case LightsOn(location) => set(light => true, location, grid)
-      case LightsOff(location) => set(light => false, location, grid)
-      case LightsToggle(location) => set(light => ! light, location, grid)
-    }
-  }
-
-  private def set[T](action: Boolean => Boolean,
-                     targetLocation: LightCoordinateRange,
-                     grid: LightGrid): LightGrid = {
+  private def set(setLight: T => T,
+                  targetLocation: LightCoordinateRange,
+                  grid: LightGrid): LightGrid = {
     val changedLights = targetLocation.elements.map{coord =>
-      val light = grid.getOrElse(coord, false)
-      (coord, action(light))
+      val light = grid.getOrElse(coord, defaultValue)
+      (coord, setLight(light))
     }
     // overwrite the old lights with changedLights
     grid ++ changedLights
   }
+
+  private def process(grid: LightGrid, instruction: LightInstruction): LightGrid = {
+    instruction match {
+      case LightsOn(location) => set(lightOn, location, grid)
+      case LightsOff(location) => set(lightOff, location, grid)
+      case LightsToggle(location) => set(lightToggle, location, grid)
+    }
+  }
+
+  protected def lightOn(light: T): T
+  protected def lightOff(light: T): T
+  protected def lightToggle(light: T): T
+}
+
+object BooleanLightGridManipulator extends LightGridManipulator[Boolean](defaultValue = false) {
+  protected def lightOn(light: Boolean) = true
+  protected def lightOff(light: Boolean) = false
+  protected def lightToggle(light: Boolean) = ! light
+}
+
+object BrightnessLightGridManipulator extends LightGridManipulator[Int](defaultValue = 0) {
+  protected def lightOn(light: Int) = light + 1
+  protected def lightOff(light: Int) = List(0, light - 1).max
+  protected def lightToggle(light: Int) = light + 2
 }
 
 object Day6Solution {
   def HowManyLightsAreLitAfterInstructions(): Int = {
     val instructions = parseInput()
-    val resultGrid = LightGridManipulator.process(instructions)
+    val resultGrid = BooleanLightGridManipulator.process(instructions)
     resultGrid.values.count(onStatus => onStatus == true)
   }
 
@@ -108,5 +124,35 @@ object Day6Solution {
 
   private def getInput(): Array[String] = {
     InputReader.ReadInput("/Day6.txt").split("\n")
+  }
+
+  // --- Part Two ---
+  //
+  // You just finish implementing your winning light pattern when you realize
+  // you mistranslated Santa's message from Ancient Nordic Elvish.
+  //
+  // The light grid you bought actually has individual brightness controls; each
+  // light can have a brightness of zero or more. The lights all start at zero.
+  //
+  // The phrase turn on actually means that you should increase the brightness
+  // of those lights by 1.
+  //
+  // The phrase turn off actually means that you should decrease the brightness
+  // of those lights by 1, to a minimum of zero.
+  //
+  // The phrase toggle actually means that you should increase the brightness of
+  // those lights by 2.
+  //
+  // What is the total brightness of all lights combined after following Santa's
+  // instructions?
+  //
+  // For example:
+  //
+  // - turn on 0,0 through 0,0 would increase the total brightness by 1.
+  // - toggle 0,0 through 999,999 would increase the total brightness by 2000000.
+  def AmountOfLightBrightnessAfterSecondSetofInstructions(): Int = {
+    val instructions = parseInput()
+    val resultGrid = BrightnessLightGridManipulator.process(instructions)
+    resultGrid.values.sum
   }
 }
