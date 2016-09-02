@@ -56,10 +56,14 @@ import scala.annotation.tailrec
 // In little Bobby's kit's instructions booklet (provided as your puzzle input),
 // what signal is ultimately provided to wire a?
 
+sealed abstract class WireOrNumberRef
+case class WireRef(name: String) extends WireOrNumberRef
+case class NumberRef(value: UShort) extends WireOrNumberRef
+
 sealed abstract class Operation
 case class LiteralValue     (a: UShort) extends Operation
 case class DirectConnection (a: String) extends Operation
-case class AndWires         (a: String, b: String) extends Operation
+case class AndOperation     (a: WireOrNumberRef, b: WireOrNumberRef) extends Operation
 case class OrWires          (a: String, b: String) extends Operation
 case class NotWire          (a: String) extends Operation
 case class LeftShift        (a: String, b: Int) extends Operation
@@ -67,12 +71,9 @@ case class RightShift       (a: String, b: Int) extends Operation
 
 object Circuit {
   def parse(input: String): (String,Operation) = {
-    val wire = "(\\w+)".r
-    val number = "(\\d+)".r
-
     val literal = s"^${number} -> ${wire}".r
     val direct  = s"^${wire} -> ${wire}".r
-    val and     = s"^${wire} AND ${wire} -> ${wire}".r
+    val and     = s"^${wireOrNumber} AND ${wireOrNumber} -> ${wire}".r
     val or      = s"^${wire} OR ${wire} -> ${wire}".r
     val not     = s"^NOT ${wire} -> ${wire}".r
     val lshift  = s"^${wire} LSHIFT ${number} -> ${wire}".r
@@ -81,7 +82,7 @@ object Circuit {
     input match {
       case literal(n, w)     => (w  -> LiteralValue(ushort(n)))
       case direct(wa, wb)    => (wb -> DirectConnection(wa))
-      case and(wa, wb, wc)   => (wc -> AndWires(wa, wb))
+      case and(wa, wb, wc)   => (wc -> AndOperation(parseWireOrNumber(wa), parseWireOrNumber(wb)))
       case or(wa, wb, wc)    => (wc -> OrWires(wa, wb))
       case not(wa, wb)       => (wb -> NotWire(wa))
       case lshift(wa, n, wb) => (wb -> LeftShift(wa, n.toInt))
@@ -89,6 +90,17 @@ object Circuit {
       case input             => throw new IllegalArgumentException(s"unknown input '${input}'")
     }
   }
+
+  private def parseWireOrNumber(input: String): WireOrNumberRef = {
+    input match {
+      case wire(name) => WireRef(name)
+      case number(value) => NumberRef(UShort(value.toInt))
+    }
+  }
+
+  private val wire = "([a-z]+)".r
+  private val number = "([0-9]+)".r
+  private val wireOrNumber = s"([a-z0-9]+)".r
 
   private def ushort(v: String): UShort = UShort(v.toInt)
 }
@@ -103,25 +115,52 @@ object LogicGateEmulator {
     val references = input.toMap
 
     def wireValue(operation: Operation): UShort = {
-      def execute(wireName: String): Operation = {
-        println(s"looking for '${wireName}' in ${references.size} references")
-        references(wireName)
+      logLine(s"looking for ${operation}")
+      def ref(name: String): Operation = {
+        logLine(s"it references wire ${name}, which is ${references(name)}.")
+        references(name)
+      }
+
+      def op(ref: WireOrNumberRef): Operation = {
+        ref match {
+          case WireRef(name) => {
+            logLine(s"it references wire ${name}, which is ${references(name)}.")
+            references(name)
+          }
+          case NumberRef(value) => {
+            logLine(s"    resolved it as the literal value ${value}.")
+            LiteralValue(value)
+          }
+        }
       }
 
       operation match {
         case LiteralValue(v)        => v
-        case DirectConnection(next) => wireValue(execute(next))
-        case AndWires(a, b)         => wireValue(execute(a)) & wireValue(execute(b))
-        case OrWires(a, b)          => wireValue(execute(a)) | wireValue(execute(b))
-        case NotWire(a)             => ~ wireValue(execute(a))
-        case LeftShift(a, count)    => (wireValue(execute(a))) << count
-        case RightShift(a, count)   => (wireValue(execute(a))) >> count
+        case DirectConnection(next) => wireValue(ref(next))
+        case AndOperation(a, b)     => wireValue(op(a)) & wireValue(op(b))
+        case OrWires(a, b)          => wireValue(ref(a)) | wireValue(ref(b))
+        case NotWire(a)             => ~ wireValue(ref(a))
+        case LeftShift(a, count)    => (wireValue(ref(a))) << count
+        case RightShift(a, count)   => (wireValue(ref(a))) >> count
         case input                  => throw new IllegalArgumentException(s"unknown input '${input}'")
       }
     }
 
-    input.map{case (wire, op) => wire -> wireValue(op)}
+    input.zipWithIndex.map{case ((wire, op), i) => {
+                             logLine(s"new operation: now looking for ${wire} = ${op} at index ${i}")
+                             val value = wireValue(op)
+                             logLine(s"    resolved ${wire} as ${value}")
+                             (wire -> value)
+                           }
+    }
       .toMap
+  }
+
+  import java.io._
+  lazy val writer = new PrintWriter(new FileOutputStream(new File("/tmp/bitops.txt"), true))
+
+  def logLine(s: String): Unit = {
+    writer.write(s + "\n")
   }
 }
 
@@ -132,7 +171,7 @@ object Day7Solution {
     circuit("a")
   }
 
-  private def ParseInput(): LogicGateEmulator.UnsolvedCircuit = {
+  def ParseInput(): LogicGateEmulator.UnsolvedCircuit = {
     val input = GetInput()
     input.map(Circuit.parse)
   }

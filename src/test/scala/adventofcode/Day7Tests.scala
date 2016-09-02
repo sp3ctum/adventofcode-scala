@@ -11,13 +11,13 @@ class Day7LogicTests extends FunSuite {
 
   test("direct connection") {
     val result = process(List("a" -> (LiteralValue(1)),
-                             "b" -> (DirectConnection("a"))))
+                              "b" -> (DirectConnection("a"))))
   }
 
   test("AND wires") {
     val result = process(List("a" -> (LiteralValue(1)),
-                             "b" -> (LiteralValue(2)),
-                             "c" -> (AndWires("a", "b"))))
+                              "b" -> (LiteralValue(2)),
+                              "c" -> (AndOperation(WireRef("a"), WireRef("b")))))
 
     assert(result == circuit("a" -> 1,
                              "b" -> 2,
@@ -26,8 +26,8 @@ class Day7LogicTests extends FunSuite {
 
   test("OR wires") {
     val result = process(List("a" -> (LiteralValue(1)),
-                             "b" -> (LiteralValue(2)),
-                             "c" -> (OrWires("a", "b"))))
+                              "b" -> (LiteralValue(2)),
+                              "c" -> (OrWires("a", "b"))))
 
     assert(result == circuit("a" -> 1,
                              "b" -> 2,
@@ -36,21 +36,21 @@ class Day7LogicTests extends FunSuite {
 
   test("NOT wire") {
     val result = process(List("a" -> (LiteralValue(8)),
-                             "b" -> (NotWire("a"))))
+                              "b" -> (NotWire("a"))))
     assert(result == circuit("a" -> 8,
                              "b" -> 65527))
   }
 
   test("LSHIFT a wire") {
     val result = process(List("a" -> (LiteralValue(1)),
-                             "b" -> (LeftShift("a", 1))))
+                              "b" -> (LeftShift("a", 1))))
     assert(result == circuit("a" -> 1,
                              "b" -> 2))
   }
 
   test("RSHIFT a wire") {
     val result = process(List("a" -> (LiteralValue(1)),
-                             "b" -> (RightShift("a", 1))))
+                              "b" -> (RightShift("a", 1))))
     assert(result == circuit("a" -> 1,
                              "b" -> 0))
   }
@@ -62,14 +62,16 @@ x AND y -> d
 x OR y -> e
 x LSHIFT 2 -> f
 y RSHIFT 2 -> g
+1 AND cx -> cy
 NOT x -> h
 h -> i""".split("\n").filterNot{_ == ""}.map(Circuit.parse)
 
     val expected = List("x" -> LiteralValue(123),
-                        "d" -> AndWires("x","y"),
+                        "d" -> AndOperation(WireRef("x"),WireRef("y")),
                         "e" -> OrWires("x","y"),
                         "f" -> LeftShift("x",2),
                         "g" -> RightShift("y",2),
+                        "cy" -> AndOperation(NumberRef(1),WireRef("cx")),
                         "h" -> NotWire("x"),
                         "i" -> DirectConnection("h"))
 
@@ -78,7 +80,7 @@ h -> i""".split("\n").filterNot{_ == ""}.map(Circuit.parse)
     }
   }
 
-  test("") {
+  test("parse and solve instructions") {
     val instructions = """
 123 -> x
 456 -> y
@@ -124,10 +126,13 @@ i -> j""".split("\n").filterNot{_ == ""}.map(Circuit.parse).toList
 }
 
 class Day7SolutionTests extends BaseSolutionTests {
+  test("parse all data (exploratory test)") {
+    Day7Solution.ParseInput() // should not crash
+  }
+
   test("solve first circuit") {
     dontRunSolutionAutomatically {
       val result = Day7Solution.SolveSignalInWireA()
-
     }
   }
 }
