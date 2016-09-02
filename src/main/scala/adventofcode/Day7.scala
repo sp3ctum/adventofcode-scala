@@ -1,4 +1,5 @@
 import spire.math.UShort
+import scala.annotation.tailrec
 
 // --- Day 7: Some Assembly Required ---
 //
@@ -64,10 +65,8 @@ case class NotWire          (a: String) extends Operation
 case class LeftShift        (a: String, b: Int) extends Operation
 case class RightShift       (a: String, b: Int) extends Operation
 
-case class Instruction(operation: Operation, targetWire: String)
-
-object Instruction {
-  def parse(input: String): Instruction = {
+object Circuit {
+  def parse(input: String): (String,Operation) = {
     val wire = "(\\w+)".r
     val number = "(\\d+)".r
 
@@ -80,13 +79,13 @@ object Instruction {
     val rshift  = s"^${wire} RSHIFT ${number} -> ${wire}".r
 
     input match {
-      case literal(n, w)     => Instruction(LiteralValue(ushort(n)), w)
-      case direct(wa, wb)    => Instruction(DirectConnection(wa), wb)
-      case and(wa, wb, wc)   => Instruction(AndWires(wa, wb), wc)
-      case or(wa, wb, wc)    => Instruction(OrWires(wa, wb), wc)
-      case not(wa, wb)       => Instruction(NotWire(wa), wb)
-      case lshift(wa, n, wb) => Instruction(LeftShift(wa, n.toInt), wb)
-      case rshift(wa, n, wb) => Instruction(RightShift(wa, n.toInt), wb)
+      case literal(n, w)     => (w  -> LiteralValue(ushort(n)))
+      case direct(wa, wb)    => (wb -> DirectConnection(wa))
+      case and(wa, wb, wc)   => (wc -> AndWires(wa, wb))
+      case or(wa, wb, wc)    => (wc -> OrWires(wa, wb))
+      case not(wa, wb)       => (wb -> NotWire(wa))
+      case lshift(wa, n, wb) => (wb -> LeftShift(wa, n.toInt))
+      case rshift(wa, n, wb) => (wb -> RightShift(wa, n.toInt))
       case input             => throw new IllegalArgumentException(s"unknown input '${input}'")
     }
   }
@@ -95,26 +94,34 @@ object Instruction {
 }
 
 object LogicGateEmulator {
-  type Circuit = Map[String,UShort]
-  val emptyCircuit: Circuit = Map()
+  type WireName = String
+  type UnsolvedCircuit = List[(WireName,Operation)]
+  type SolvedCircuit = Map[WireName,UShort]
 
-  def process(steps: Array[Instruction]): Circuit = {
-    steps.foldLeft(emptyCircuit)(process)
-  }
+  def process(input: UnsolvedCircuit): SolvedCircuit = {
 
-  private def process(circuit: Circuit, step: Instruction): Circuit = {
-    val Instruction(operation, targetWire) = step
-    def valueOf(wire: String): UShort = circuit(wire)
+    val references = input.toMap
 
-    operation match {
-      case LiteralValue(a)     => circuit + (targetWire -> a)
-      case DirectConnection(a) => circuit + (targetWire -> valueOf(a))
-      case AndWires(a,b)       => circuit + (targetWire -> (valueOf(a) & valueOf(b)))
-      case OrWires(a,b)        => circuit + (targetWire -> (valueOf(a) | valueOf(b)))
-      case LeftShift(a,b)      => circuit + (targetWire -> (valueOf(a) << b))
-      case RightShift(a,b)     => circuit + (targetWire -> (valueOf(a) >> b))
-      case NotWire(a)          => circuit + (targetWire -> (~valueOf(a)))
+    def wireValue(operation: Operation): UShort = {
+      def execute(wireName: String): Operation = {
+        println(s"looking for '${wireName}' in ${references.size} references")
+        references(wireName)
+      }
+
+      operation match {
+        case LiteralValue(v)        => v
+        case DirectConnection(next) => wireValue(execute(next))
+        case AndWires(a, b)         => wireValue(execute(a)) & wireValue(execute(b))
+        case OrWires(a, b)          => wireValue(execute(a)) | wireValue(execute(b))
+        case NotWire(a)             => ~ wireValue(execute(a))
+        case LeftShift(a, count)    => (wireValue(execute(a))) << count
+        case RightShift(a, count)   => (wireValue(execute(a))) >> count
+        case input                  => throw new IllegalArgumentException(s"unknown input '${input}'")
+      }
     }
+
+    input.map{case (wire, op) => wire -> wireValue(op)}
+      .toMap
   }
 }
 
@@ -125,12 +132,12 @@ object Day7Solution {
     circuit("a")
   }
 
-  private def ParseInput(): Array[Instruction] = {
+  private def ParseInput(): LogicGateEmulator.UnsolvedCircuit = {
     val input = GetInput()
-    input.map(Instruction.parse)
+    input.map(Circuit.parse)
   }
 
-  private def GetInput(): Array[String] = {
-    InputReader.ReadInput("/Day7.txt").split("\n")
+  private def GetInput(): List[String] = {
+    InputReader.ReadInput("/Day7.txt").split("\n").toList
   }
 }
