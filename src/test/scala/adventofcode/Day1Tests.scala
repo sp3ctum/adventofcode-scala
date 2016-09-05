@@ -4,7 +4,7 @@ class BaseSolutionTests extends FunSuite {
   def dontRunSolutionAutomatically(block: => Unit): Unit = {
     // things marked with this should be run in the repl or with a main method
     // somewhere
-    cancel("not running solution automatically")
+    cancel("not running solution automatically so test run is not too slow")
   }
 }
 
