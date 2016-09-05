@@ -110,57 +110,51 @@ object LogicGateEmulator {
   type UnsolvedCircuit = List[(WireName,Operation)]
   type SolvedCircuit = Map[WireName,UShort]
 
-  def process(input: UnsolvedCircuit): SolvedCircuit = {
+  // quick and dirty beginner memoization
+  import scala.collection.mutable
+  private[this] val vals = mutable.Map.empty[Operation,UShort]
+  def cache(result: (Operation,UShort)) = vals + result
 
+  def process(input: UnsolvedCircuit): SolvedCircuit = {
     val references = input.toMap
 
     def wireValue(operation: Operation): UShort = {
-      logLine(s"looking for ${operation}")
-      def ref(name: String): Operation = {
-        logLine(s"it references wire ${name}, which is ${references(name)}.")
-        references(name)
+      if (vals.contains(operation)) {
+        vals(operation)
       }
+      else {
+        def ref(name: String): Operation = {
+          references(name)
+        }
 
-      def op(ref: WireOrNumberRef): Operation = {
-        ref match {
-          case WireRef(name) => {
-            logLine(s"it references wire ${name}, which is ${references(name)}.")
-            references(name)
-          }
-          case NumberRef(value) => {
-            logLine(s"    resolved it as the literal value ${value}.")
-            LiteralValue(value)
+        def op(ref: WireOrNumberRef): Operation = {
+          ref match {
+            case WireRef(name) => {
+              references(name)
+            }
+            case NumberRef(value) => {
+              LiteralValue(value)
+            }
           }
         }
-      }
 
-      operation match {
-        case LiteralValue(v)        => v
-        case DirectConnection(next) => wireValue(ref(next))
-        case AndOperation(a, b)     => wireValue(op(a)) & wireValue(op(b))
-        case OrWires(a, b)          => wireValue(ref(a)) | wireValue(ref(b))
-        case NotWire(a)             => ~ wireValue(ref(a))
-        case LeftShift(a, count)    => (wireValue(ref(a))) << count
-        case RightShift(a, count)   => (wireValue(ref(a))) >> count
-        case input                  => throw new IllegalArgumentException(s"unknown input '${input}'")
+        val retval = operation match {
+          case LiteralValue(v)        => v
+          case DirectConnection(next) => wireValue(ref(next))
+          case AndOperation(a, b)     => wireValue(op(a)) & wireValue(op(b))
+          case OrWires(a, b)          => wireValue(ref(a)) | wireValue(ref(b))
+          case NotWire(a)             => ~ wireValue(ref(a))
+          case LeftShift(a, count)    => (wireValue(ref(a))) << count
+          case RightShift(a, count)   => (wireValue(ref(a))) >> count
+          case input                  => throw new Exception(s"unknown input '${input}'")
+        }
+        cache(operation -> retval)
+        retval
       }
     }
 
-    input.zipWithIndex.map{case ((wire, op), i) => {
-                             logLine(s"new operation: now looking for ${wire} = ${op} at index ${i}")
-                             val value = wireValue(op)
-                             logLine(s"    resolved ${wire} as ${value}")
-                             (wire -> value)
-                           }
-    }
+    input.map{case (wire, op) => (wire -> wireValue(op))}
       .toMap
-  }
-
-  import java.io._
-  lazy val writer = new PrintWriter(new FileOutputStream(new File("/tmp/bitops.txt"), true))
-
-  def logLine(s: String): Unit = {
-    writer.write(s + "\n")
   }
 }
 
