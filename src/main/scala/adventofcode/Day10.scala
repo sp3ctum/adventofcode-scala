@@ -52,4 +52,8 @@ object Day10Solution {
   def solve(): String = {
     LookAndSay.encodeTimes(input, 40)
   }
+
+  def solvePart2(): String = {
+    LookAndSay.encodeTimes(input, 50)
+  }
 }

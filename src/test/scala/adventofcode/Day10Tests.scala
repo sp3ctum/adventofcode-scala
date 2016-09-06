@@ -22,4 +22,10 @@ class Day10SolutionTests extends BaseSolutionTests {
       // this takes about 10 seconds
     }
   }
+
+  test("solve part 2") {
+    dontRunSolutionAutomatically {
+      Day10Solution.solvePart2().length()
+    }
+  }
 }
