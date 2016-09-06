@@ -76,6 +76,11 @@ object LengthCounter {
     charCount - memoryCount
   }
 
+  def escape(s: String): String = {
+    val contents = org.apache.commons.lang.StringEscapeUtils.escapeJava(s)
+    s""""${contents}"""" // add quotes
+  }
+
   private def remove(s: String, r: Regex): String = {
     r.replaceAllIn(s, ".")
   }
@@ -91,6 +96,14 @@ object Day8Solution {
   def Solve(): Int = {
     val input = readInput()
     LengthCounter.charsInCodeMinusCharsInMemory(input)
+  }
+
+  def SolvePart2(): Int = {
+    val input = readInput()
+    val charsInEscapedStrings = input.map(LengthCounter.escape(_).length()).sum
+    val originalLengths = input.map(_.length()).sum
+
+    charsInEscapedStrings - originalLengths
   }
 
   def readInput(): List[String] = {
