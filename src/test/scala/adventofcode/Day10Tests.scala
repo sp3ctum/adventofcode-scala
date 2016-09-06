@@ -25,6 +25,8 @@ class Day10SolutionTests extends BaseSolutionTests {
 
   test("solve part 2") {
     dontRunSolutionAutomatically {
+      // couldn't get this to finish at all. too slow.
+      // TODO profile this
       Day10Solution.solvePart2().length()
     }
   }

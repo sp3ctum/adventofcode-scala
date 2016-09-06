@@ -1,4 +1,5 @@
 import scala.annotation.tailrec
+import scala.collection.immutable.{ Queue }
 
 // --- Day 10: Elves Look, Elves Say ---
 //
@@ -24,21 +25,21 @@ import scala.annotation.tailrec
 // What is the length of the result?
 
 object LookAndSay {
+  type CharCounts = Queue[(Int,Char)]
+
   def encode(s: String): String = {
     @tailrec
-    def getGroups(result: List[(Int, Char)], remaining: Seq[Char]): List[(Int,Char)] = {
-      remaining.headOption match {
-        case None => result
-        case Some(x) => {
-          val rest = remaining.drop(1)
-          val sames = rest.takeWhile{_ == x}
-          val others = rest.drop(sames.length)
-          getGroups((sames.length + 1, x) :: result, others)
+    def getGroups(result: CharCounts, remaining: Seq[Char]): CharCounts = {
+      remaining match {
+        case Seq() => result
+        case Seq(x, rest @ _*) => {
+          val (sames, others) = rest.span{_ == x}
+          getGroups(result.enqueue((sames.length + 1, x)), others)
         }
       }
     }
 
-    val groups = getGroups(List(), s).reverse
+    val groups = getGroups(Queue(), s)
     groups.map{case (count, c) => s"${count}${c}"}.mkString
   }
 
