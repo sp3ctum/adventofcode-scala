@@ -66,12 +66,14 @@ object OneLinerListSolutions {
   }
 
   // P09 (**) Pack consecutive duplicates of list elements into sublists.
-  def duplicatesToSublists[T](remaining: List[T]): List[List[T]] = {
+  @tailrec
+  def duplicatesToSublists[T](remaining: List[T],
+                              result: List[List[T]] = List()): List[List[T]] = {
     remaining match {
-      case Nil => Nil
+      case Nil => result
       case x :: xs => {
         val (sames, rest) = xs span{x == _}
-        (x :: sames) :: duplicatesToSublists(rest)
+        duplicatesToSublists(rest, result ::: List(x :: sames))
       }
     }
   }
