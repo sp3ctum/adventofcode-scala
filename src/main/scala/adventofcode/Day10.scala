@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 // --- Day 10: Elves Look, Elves Say ---
 //
 // Today, the Elves are playing a game called look-and-say. They take turns
@@ -23,8 +25,21 @@
 
 object LookAndSay {
   def encode(s: String): String = {
-    val groups = OneLinerListSolutions.duplicatesToSublists(s.toList)
-    groups.map(g => s"${g.length}${g.head}").mkString
+    @tailrec
+    def getGroups(result: List[(Int, Char)], remaining: Seq[Char]): List[(Int,Char)] = {
+      remaining.headOption match {
+        case None => result
+        case Some(x) => {
+          val rest = remaining.drop(1)
+          val sames = rest.takeWhile{_ == x}
+          val others = rest.drop(sames.length)
+          getGroups((sames.length + 1, x) :: result, others)
+        }
+      }
+    }
+
+    val groups = getGroups(List(), s).reverse
+    groups.map{case (count, c) => s"${count}${c}"}.mkString
   }
 
   def encodeTimes(s: String, n: Int): String = {

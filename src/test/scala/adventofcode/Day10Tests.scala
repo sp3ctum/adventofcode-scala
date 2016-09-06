@@ -19,7 +19,7 @@ class Day10SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day10Solution.solve().length()
       // res5: Int = 252594
-      // this took a couple of minutes. definitely not efficient!
+      // this takes about 10 seconds
     }
   }
 }
