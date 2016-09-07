@@ -19,15 +19,15 @@ class Day10SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day10Solution.solve().length()
       // res5: Int = 252594
-      // this takes about 10 seconds
+      // this takes about 0.2 seconds
     }
   }
 
   test("solve part 2") {
     dontRunSolutionAutomatically {
-      // couldn't get this to finish at all. too slow.
-      // TODO profile this
       Day10Solution.solvePart2().length()
+      // res5: Int = 3579328
+      // this took about 8 seconds
     }
   }
 }

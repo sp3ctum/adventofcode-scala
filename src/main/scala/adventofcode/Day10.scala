@@ -25,21 +25,21 @@ import scala.collection.immutable.{ Queue }
 // What is the length of the result?
 
 object LookAndSay {
-  type CharCounts = Queue[(Int,Char)]
+  type CharCounts = List[(Int,Char)]
 
   def encode(s: String): String = {
     @tailrec
-    def getGroups(result: CharCounts, remaining: Seq[Char]): CharCounts = {
+    def getGroups(result: CharCounts, remaining: List[Char]): CharCounts = {
       remaining match {
-        case Seq() => result
-        case Seq(x, rest @ _*) => {
+        case Nil => result
+        case x :: rest => {
           val (sames, others) = rest.span{_ == x}
-          getGroups(result.enqueue((sames.length + 1, x)), others)
+          getGroups((sames.length + 1, x) :: result, others)
         }
       }
     }
 
-    val groups = getGroups(Queue(), s)
+    val groups = getGroups(List(), s.toList).reverse
     groups.map{case (count, c) => s"${count}${c}"}.mkString
   }
 
