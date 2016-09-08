@@ -40,54 +40,88 @@ import scala.annotation.tailrec
 // Given Santa's current password (your puzzle input), what should his next
 // password be?
 
+object SantaPasswordIncrementer {
+  def nextValidPassword(p: String): String = {
+    val passwords = nextPasswordsFor(p)
+    val validPasswords = passwords.filter(SantaPasswordValidation.validate)
+    validPasswords.take(1).toList.head
+  }
+
+  def nextPasswordsFor(p: String): Iterator[String] = {
+    Iterator.iterate(p)(SantaPasswordCreator.incrementPassword).drop(1)
+  }
+}
+
 object SantaPasswordCreator {
   val characters: Map[Char,Int] =
     "abcdefghijklmnopqrstuvwxyz".zipWithIndex.toMap
 
   val numbers: Map[Int,Char] = characters.map{_.swap}
-  val base = characters.size
+  val base = numbers.size
 
   def incrementPassword(p: String): String = {
-    val digits = convertToDigits(p)
-    val incremented = digits.sum + 1
-    convertToString(incremented, padTo = digits.length)
+    incrementCharacter("", true, p.reverse.toList).reverse
   }
 
-  def convertToDigits(s: String): List[Int] = {
-    s.reverse.zipWithIndex
-      .map{case (c, index) =>
-        characters(c) * Math.pow(base.toDouble, index.toDouble).toInt
-      }
-      .toList
+  private def incrementCharacter(result: String, shouldIncrement: Boolean, remaining: List[Char]): String = {
+    remaining match {
+      case Nil => result
+      case 'z' :: Nil => "aa" + result
+      case 'z' :: rest => incrementCharacter("a" + result, true, rest)
+      case x :: rest if (shouldIncrement) => result + nextCharacter(x).toString() + rest.mkString
+      case x :: rest => x + result + rest.mkString
+    }
   }
 
-  def convertToString(n: Int, padTo: Int): String = {
-    val digits = BaseConverter.toBase(n, base = base)
-    val firstCharacter = numbers(0).toString()
-    val padding: String = firstCharacter * (padTo - digits.length)
-    padding + digits.map(i => numbers(i)).mkString
+  def nextCharacter(c: Char): Char = {
+    c match {
+      case 'z' => 'a'
+      case x => (x + 1).toChar
+    }
   }
 }
 
-object BaseConverter {
-  def toBase(n: Int, base: Int): List[Int] = {
-    require(base > 1)
+object SantaPasswordValidation {
+  def validate(p: String): Boolean = {
+    doesNotContainDisallowedLetters(p) &&
+      containsThreeSuccessiveCharactersByCharValue(p) &&
+      containsTwoDifferentPairs(p)
+  }
 
-    @tailrec
-    def divide(result: List[Int], number: Int): List[Int] = {
-      val (quotient, remainder) = (number / base, number % base)
-      val newResult = remainder :: result
+  def containsThreeSuccessiveCharactersByCharValue(p: String): Boolean = {
+    p.toList.sliding(3).exists{
+      case chars => {
+        val List(charA, charB, charC) = chars
+        val next = SantaPasswordCreator.nextCharacter _
 
-      if (quotient == 0)
-        newResult
-      else
-        divide(newResult, quotient)
+        charC == next(charB) && charB == next(charA)
+      }
     }
+  }
 
-    divide(List(), n)
+  def doesNotContainDisallowedLetters(p: String): Boolean = {
+    ! p.contains("i") && ! p.contains("o") && ! p.contains("l")
+  }
+
+  def containsTwoDifferentPairs(p: String): Boolean = {
+    val pairs = p.sliding(2).filter(s => s.head == s.last).toList
+    val groups = pairs.groupBy(identity).keys
+    groups.size >= 2
   }
 }
 
 object Day11Solution {
   val input = "hepxcrrq"
+  def getSantasNextPassword(): String = {
+    SantaPasswordIncrementer.nextValidPassword(input)
+  }
+
+  // --- Part Two ---
+  //
+  // Santa's password expired again. What's the next one?
+
+  def getSantasSecondPassword(): String = {
+    val firstPassword = getSantasNextPassword
+    SantaPasswordIncrementer.nextValidPassword(firstPassword)
+  }
 }
