@@ -4,7 +4,6 @@ import org.json4s.jackson.JsonMethods
 
 class Day12Tests extends FunSuite {
   test("non-red objects") {
-    // does not ignore arrays
     assert(SantaJsonFilter.withoutNonRedObjects(parse("[1,2,3]")) == parse("[1,2,3]"))
 
     // ignores red objects
