@@ -80,6 +80,10 @@ class Day11SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day11Solution.getSantasSecondPassword
 
+      SantaPasswordCreator.incrementPassword("hepxxyzz")
+      // incorrect:
+      // res130: String = hepxxzaa
+
       SantaPasswordIncrementer.nextValidPassword("hepxxyzz")
       // incorrect:
       // res124: String = hepyyzaa

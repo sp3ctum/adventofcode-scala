@@ -22,12 +22,39 @@
 import org.json4s._
 import org.json4s.jackson.JsonMethods
 
+object SantaJsonFilter {
+  def withoutNonRedObjects(json: JValue): JValue = {
+    json.remove(isRed)
+  }
+
+  def isRed(o: JValue): Boolean = {
+    o match {
+      case JObject(fields) => fields.exists {
+        case (key, JString("red")) => true
+        case _ => false
+      }
+      case _ => false
+    }
+  }
+}
+
 object Day12Solution {
+  def sum(json: JValue): BigInt = {
+    (json \\ classOf[JInt]).sum
+  }
+
   def solveSum(): BigInt = {
     val input = InputReader.ReadInput("Day12.txt")
     val json = JsonMethods.parse(input)
 
-    (json \\ classOf[JInt]).sum
-    // res13: org.json4s.JInt#Values = 191164
+    sum(json)
+  }
+
+  def solveNonRedSum(): BigInt = {
+    val input = InputReader.ReadInput("Day12.txt")
+    val json = JsonMethods.parse(input)
+
+    val withoutRedObjects = SantaJsonFilter.withoutNonRedObjects(json)
+    (withoutRedObjects \\ classOf[JInt]).sum
   }
 }
