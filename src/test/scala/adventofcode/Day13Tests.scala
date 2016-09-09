@@ -34,6 +34,29 @@ David would gain 41 happiness units by sitting next to Carol.
     assert(SittingOrderDeterminer.optimalSittingPosition(data) ==
              ((Set("Alice", "Bob", "Carol", "David"),330)))
   }
+
+  test("add me to seating happiness amounts") {
+    val happinesses = List(Happiness("Alice", 1, "Bob"),
+                           Happiness("Bob", 1, "Alice"),
+                           Happiness("Bob", 1, "Cecilia"),
+                           Happiness("Cecilia", 1, "Bob"),
+                           Happiness("Alice", 1, "Cecilia"),
+                           Happiness("Cecilia", 1, "Alice"))
+
+    assert(Day13Solution.addMe(happinesses) ==
+             List(Happiness("Alice",   1, "Bob"),
+                  Happiness("Bob",     1, "Alice"),
+                  Happiness("Bob",     1, "Cecilia"),
+                  Happiness("Cecilia", 1, "Bob"),
+                  Happiness("Alice",   1, "Cecilia"),
+                  Happiness("Cecilia", 1, "Alice"),
+                  Happiness("Me",      0, "Alice"),
+                  Happiness("Bob",     0, "Me"),
+                  Happiness("Me",      0, "Cecilia"),
+                  Happiness("Me",      0, "Bob"),
+                  Happiness("Cecilia", 0, "Me"),
+                  Happiness("Alice",   0, "Me")))
+  }
 }
 
 class Day13SolutionTests extends BaseSolutionTests {
@@ -47,6 +70,13 @@ class Day13SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day13Solution.solve()
       // res39: (Set[String], Int) = (Set(Carol, George, Bob, Frank, Eric, Alice, David, Mallory),618)
+    }
+  }
+
+  test("solve part 2") {
+    dontRunSolutionAutomatically {
+      Day13Solution.solvePartTwo()
+      // res46: (Set[String], Int) = (Set(Me, Carol, George, Bob, Frank, Eric, Alice, David, Mallory),601)
     }
   }
 }
