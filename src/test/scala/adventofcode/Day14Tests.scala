@@ -24,6 +24,35 @@ class ReindeerDistanceMeasurerTests extends FunSuite {
   }
 }
 
+class ReindeerPointTests extends FunSuite {
+  test("give points for current leader") {
+    val comet = Reindeer("Comet", Flying(0, 1), 2)
+    val dancer = Reindeer("Dancer", Flying(1, 1), 2)
+
+    val points = ReindeerPointCalculator.getRaceStatusAtSeconds(List(comet, dancer), 1)
+    assert(points == Map(comet -> 0, dancer -> 1))
+  }
+
+  test("give points to multiple tied leaders") {
+    // these reindeers will always be tied
+    val adolph = Reindeer("Adolph", Flying(10, 1), 1)
+    val berta = Reindeer("Berta", Flying(10, 1), 1)
+
+    val points = ReindeerPointCalculator.getRaceStatusAtSeconds(List(adolph, berta), 1)
+    assert(points == Map(adolph -> 1, berta -> 1))
+  }
+
+  test("points for reindeers at n seconds (copied example)") {
+    val comet = Reindeer("Comet", Flying(14, 10), 127)
+    val dancer = Reindeer("Dancer", Flying(16, 11), 162)
+
+    val raceStatus = ReindeerPointCalculator.getRaceStatusAtSeconds(List(comet, dancer), 1000)
+
+    assert(raceStatus == Map(dancer -> 689,
+                             comet -> 312))
+  }
+}
+
 class Day14SolutionTests extends BaseSolutionTests {
   test("parse input") {
     dontRunSolutionAutomatically {
@@ -35,6 +64,13 @@ class Day14SolutionTests extends BaseSolutionTests {
     dontRunSolutionAutomatically {
       Day14Solution.solve()
       // res68: (Reindeer, Int) = (Reindeer(Vixen,Flying(19,7),124),2660)
+    }
+  }
+
+  test("solve part 2") {
+    dontRunSolutionAutomatically {
+      Day14Solution.solvePart2()
+      // res9: (Reindeer, Int) = (Reindeer(Blitzen,Flying(19,9),158),1256)
     }
   }
 }
