@@ -127,7 +127,9 @@ i -> j""".split("\n").filterNot{_ == ""}.map(Circuit.parse).toList
 
 class Day7SolutionTests extends BaseSolutionTests {
   test("parse all data (exploratory test)") {
-    Day7Solution.ParseInput() // should not crash
+    dontRunSolutionAutomatically {
+      Day7Solution.ParseInput() // should not crash
+    }
   }
 
   test("solve first circuit") {
