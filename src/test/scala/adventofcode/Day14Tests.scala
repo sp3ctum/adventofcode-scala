@@ -1,5 +1,4 @@
 import org.scalatest.FunSuite
-import scala.collection.immutable.Stream
 
 class ReindeerDistanceMeasurerTests extends FunSuite {
   test("calculate reindeer race") {
