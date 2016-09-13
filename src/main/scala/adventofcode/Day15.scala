@@ -66,9 +66,9 @@ object Ingredient {
 }
 
 object CookieRecipeComparer {
-  def score(ingredientAmounts: Map[Int,Ingredient]): Int = {
+  def score(hundredInFourGroups: Map[Int,Ingredient]): Int = {
     def sumOf(property: Ingredient => Int): Int = {
-      val sum = ingredientAmounts.map{case (amount,ingredient) =>
+      val sum = hundredInFourGroups.map{case (amount,ingredient) =>
         property(ingredient) * amount}.sum
       Math.max(0, sum)
     }
@@ -92,11 +92,11 @@ Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n")
 
   def solve() = {
     val ingredients = parseInput
-    val combination = bestCombinationOfIngredients(ingredients)
+    bestCombinationOfIngredients(ingredients)
   }
 
   def bestCombinationOfIngredients(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
-    val amountOptions = ingredientAmounts(ingredients.length)
+    val amountOptions = hundredInFourGroups()
     val cookies = amountOptions.map(a => a.zip(ingredients).toMap)
 
     val cookieScores = cookies.map(c => CookieRecipeComparer.score(c) -> c)
@@ -104,28 +104,13 @@ Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n")
       .last
   }
 
-  /**
-    * divides 100 ingredients into n groups. Returns all divisions that are possible.
-    */
-  def ingredientAmounts(groups: Int, amount: Int = 100): List[List[Int]] = {
-    // brute forcing this is fast enough by far
-
-    val numbers = (1 to (amount - (groups - 1)))
-
-    @tailrec
-    def combinationsOfNumbers(level: Int, result: List[List[Int]]): List[List[Int]] = {
-      if (level == groups)
-        result
-      else {
-        val newResult = result.flatMap(
-          list => numbers.map(n => n :: list))
-        combinationsOfNumbers(level + 1, newResult)
-      }
-    }
-
-    val startingNumbers = numbers.toList.map(n => List(n))
-    val allCombinations = combinationsOfNumbers(1, startingNumbers)
-
-    allCombinations.filter(_.sum == amount)
+  def hundredInFourGroups(): IndexedSeq[List[Int]] = {
+    // this is fast enough to compute by brute force
+    for {a <- (1 to 97)
+         b <- (1 to 97)
+         c <- (1 to 97)
+         d <- (1 to 97)
+         if (a + b + c + d) == 100}
+    yield List(a,b,c,d)
   }
 }
