@@ -17,7 +17,7 @@ class Day15Tests extends FunSuite {
   }
 
   test("get best combination of ingredients") {
-    val best = Day15Solution.bestCombinationOfIngredients(Array(butterscotch, cinnamon))
+    val best = CookieRecipeComparer.bestCombinationOfIngredients(Array(butterscotch, cinnamon))
     val expected = (62842880, Map(44 -> butterscotch, 56 -> cinnamon))
 
     assert(best == expected)
@@ -31,7 +31,7 @@ class Day15Tests extends FunSuite {
   }
 
   test("get best cookie at 500 calories") {
-    val bestCookie = Day15Solution.bestCookieAt500Calories(Array(butterscotch, cinnamon))
+    val bestCookie = CookieRecipeComparer.bestCookieAt500Calories(Array(butterscotch, cinnamon))
     assert(bestCookie == ((57600000, Map(40 -> butterscotch, 60 -> cinnamon))))
   }
 
@@ -65,6 +65,9 @@ class Day15SolutionTests extends BaseSolutionTests {
 
     // Elapsed time: 775394286ns
     // res11: (Int, Map[Int,Ingredient]) = (11162880,Map(25 -> Ingredient(Sprinkles,5,-1,0,0,5), 27 -> Ingredient(PeanutButter,-1,3,0,0,1), 18 -> Ingredient(Frosting,0,-1,4,0,6), 30 -> Ingredient(Sugar,-1,0,0,2,8)))
+    // incorrect too
+    // res12: Int = 11163380
+
 
   }
 }

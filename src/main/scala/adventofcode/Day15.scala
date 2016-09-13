@@ -86,21 +86,6 @@ object CookieRecipeComparer {
     Math.max(0, sum)
   }
 
-}
-
-object Day15Solution {
-  val input = """
-Sprinkles: capacity 5, durability -1, flavor 0, texture 0, calories 5
-PeanutButter: capacity -1, durability 3, flavor 0, texture 0, calories 1
-Frosting: capacity 0, durability -1, flavor 4, texture 0, calories 6
-Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n").filterNot(_ == "")
-  def parseInput = input.map(Ingredient.parse)
-
-  def solve(): (Int, Map[Int, Ingredient]) = {
-    val ingredients = parseInput
-    bestCombinationOfIngredients(ingredients)
-  }
-
   def bestCombinationOfIngredients(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
     val options = cookieOptions(ingredients)
 
@@ -137,6 +122,30 @@ Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n")
     amountOptions.map(a => a.zip(ingredients).toMap)
   }
 
+  def bestCookieAt500Calories(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
+    val cookiesWith500Calories = cookieOptions(ingredients)
+      .filter(CookieRecipeComparer.has500Calories)
+
+    val cookieScores = cookiesWith500Calories.map(c => CookieRecipeComparer.score(c) -> c)
+
+    cookieScores.sortBy {case (score, ingredients) => score}
+      .last
+  }
+}
+
+object Day15Solution {
+  val input = """
+Sprinkles: capacity 5, durability -1, flavor 0, texture 0, calories 5
+PeanutButter: capacity -1, durability 3, flavor 0, texture 0, calories 1
+Frosting: capacity 0, durability -1, flavor 4, texture 0, calories 6
+Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n").filterNot(_ == "")
+  def parseInput = input.map(Ingredient.parse)
+
+  def solve(): (Int, Map[Int, Ingredient]) = {
+    val ingredients = parseInput
+    CookieRecipeComparer.bestCombinationOfIngredients(ingredients)
+  }
+
   // --- Part Two ---
   //
   // Your cookie recipe becomes wildly popular! Someone asks if you can make
@@ -155,16 +164,6 @@ Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n")
   // of 500?
   def solvePart2(): (Int, Map[Int, Ingredient]) = {
     val ingredients = parseInput
-    bestCookieAt500Calories(ingredients)
-  }
-
-  def bestCookieAt500Calories(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
-    val cookiesWith500Calories = cookieOptions(ingredients)
-      .filter(CookieRecipeComparer.has500Calories)
-
-    val cookieScores = cookiesWith500Calories.map(c => CookieRecipeComparer.score(c) -> c)
-
-    cookieScores.sortBy {case (score, ingredients) => score}
-      .last
+    CookieRecipeComparer.bestCookieAt500Calories(ingredients)
   }
 }
