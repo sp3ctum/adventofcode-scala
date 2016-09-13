@@ -23,14 +23,24 @@ class Day15Tests extends FunSuite {
     assert(best == expected)
   }
 
-  def butterscotch = Ingredient.parse(
-    "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8")
-  def cinnamon = Ingredient.parse(
-    "Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3")
+  test("count amount of calories in a cookie") {
+    val cookie = Map(40 -> butterscotch, 60 -> cinnamon)
+
+    assert(CookieRecipeComparer.has500Calories(cookie) == true)
+    assert(CookieRecipeComparer.score(cookie) == 57600000)
+  }
+
+  test("get best cookie at 500 calories") {
+    val bestCookie = Day15Solution.bestCookieAt500Calories(Array(butterscotch, cinnamon))
+    assert(bestCookie == ((57600000, Map(40 -> butterscotch, 60 -> cinnamon))))
+  }
+
+  def butterscotch = Ingredient.parse("Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8")
+  def cinnamon = Ingredient.parse("Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3")
 }
 
 class Day15SolutionTests extends BaseSolutionTests {
-  test("solve part 1: ") {
+  test("solve part 1 ") {
     dontRunSolutionAutomatically {
       // what is the total score of the highest-scoring cookie you can make?
       Timer.time {
@@ -43,5 +53,18 @@ class Day15SolutionTests extends BaseSolutionTests {
       //                    18 -> Ingredient(Frosting,0,-1,4,0,6),
       //                    19 -> Ingredient(Sugar,-1,0,0,2,8)))
     }
+  }
+
+  test("solve part 2") {
+    // what is the total score of the highest-scoring cookie you can make?
+    // this one requires a cookie with exactly 500 calories
+    Timer.time {
+      Day15Solution.solvePart2()
+    }
+    // incorrect!!!
+
+    // Elapsed time: 775394286ns
+    // res11: (Int, Map[Int,Ingredient]) = (11162880,Map(25 -> Ingredient(Sprinkles,5,-1,0,0,5), 27 -> Ingredient(PeanutButter,-1,3,0,0,1), 18 -> Ingredient(Frosting,0,-1,4,0,6), 30 -> Ingredient(Sugar,-1,0,0,2,8)))
+
   }
 }

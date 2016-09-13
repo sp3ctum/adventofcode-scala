@@ -66,20 +66,26 @@ object Ingredient {
 }
 
 object CookieRecipeComparer {
-  def score(hundredInFourGroups: Map[Int,Ingredient]): Int = {
-    def sumOf(property: Ingredient => Int): Int = {
-      val sum = hundredInFourGroups.map{case (amount,ingredient) =>
-        property(ingredient) * amount}.sum
-      Math.max(0, sum)
-    }
+  type CookieIngredients = Map[Int,Ingredient]
 
-    val total = List(sumOf(i => i.capacity),
-                     sumOf(i => i.durability),
-                     sumOf(i => i.flavor),
-                     sumOf(i => i.texture)).product
-
+  def score(cookie: CookieIngredients): Int = {
+    val total = List(sumOf(cookie, i => i.capacity),
+                     sumOf(cookie, i => i.durability),
+                     sumOf(cookie, i => i.flavor),
+                     sumOf(cookie, i => i.texture)).product
     Math.max(total, 0)
   }
+
+  def has500Calories(cookie: CookieIngredients): Boolean = {
+    sumOf(cookie, i => i.calories) == 500
+  }
+
+  private def sumOf(cookie: CookieIngredients, property: Ingredient => Int): Int = {
+    val sum = cookie.map{case (amount,ingredient) =>
+      property(ingredient) * amount}.sum
+    Math.max(0, sum)
+  }
+
 }
 
 object Day15Solution {
@@ -90,27 +96,75 @@ Frosting: capacity 0, durability -1, flavor 4, texture 0, calories 6
 Sugar: capacity -1, durability 0, flavor 0, texture 2, calories 8""".split("\n").filterNot(_ == "")
   def parseInput = input.map(Ingredient.parse)
 
-  def solve() = {
+  def solve(): (Int, Map[Int, Ingredient]) = {
     val ingredients = parseInput
     bestCombinationOfIngredients(ingredients)
   }
 
   def bestCombinationOfIngredients(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
-    val amountOptions = hundredInFourGroups()
-    val cookies = amountOptions.map(a => a.zip(ingredients).toMap)
+    val options = cookieOptions(ingredients)
 
-    val cookieScores = cookies.map(c => CookieRecipeComparer.score(c) -> c)
+    val cookieScores = options.map(c => CookieRecipeComparer.score(c) -> c)
     cookieScores.sortBy {case (score, ingredients) => score}
       .last
   }
 
-  def hundredInFourGroups(): IndexedSeq[List[Int]] = {
-    // this is fast enough to compute by brute force
-    for {a <- (1 to 97)
-         b <- (1 to 97)
-         c <- (1 to 97)
-         d <- (1 to 97)
-         if (a + b + c + d) == 100}
-    yield List(a,b,c,d)
+  def hundredInGroups(groups: Int): IndexedSeq[List[Int]] = {
+    groups match {
+      case 4 =>
+        // This is fast enough to compute by brute force.
+        // maximum for a group is 97 - so each of the other three groups would
+        // contain the number 1.
+        for {a <- (1 to 97)
+             b <- (1 to 97)
+             c <- (1 to 97)
+             d <- (1 to 97)
+             if (a + b + c + d) == 100}
+        yield List(a,b,c,d)
+      case 2 => // for testing
+        for {a <- (1 to 99)
+             b <- (1 to 99)
+             if (a + b) == 100}
+        yield List(a,b)
+    }
+  }
+
+  /**
+    * all the different kinds of cookies it's possible to make with the given ingredients
+    */
+  def cookieOptions(ingredients: Array[Ingredient]): IndexedSeq[Map[Int, Ingredient]] = {
+    val amountOptions = hundredInGroups(ingredients.length)
+    amountOptions.map(a => a.zip(ingredients).toMap)
+  }
+
+  // --- Part Two ---
+  //
+  // Your cookie recipe becomes wildly popular! Someone asks if you can make
+  // another recipe that has exactly 500 calories per cookie (so they can use it
+  // as a meal replacement). Keep the rest of your award-winning process the
+  // same (100 teaspoons, same ingredients, same scoring system).
+  //
+  // For example, given the ingredients above, if you had instead selected 40
+  // teaspoons of butterscotch and 60 teaspoons of cinnamon (which still adds to
+  // 100), the total calorie count would be 40*8 + 60*3 = 500. The total score
+  // would go down, though: only 57600000, the best you can do in such trying
+  // circumstances.
+  //
+  // Given the ingredients in your kitchen and their properties, what is the
+  // total score of the highest-scoring cookie you can make with a calorie total
+  // of 500?
+  def solvePart2(): (Int, Map[Int, Ingredient]) = {
+    val ingredients = parseInput
+    bestCookieAt500Calories(ingredients)
+  }
+
+  def bestCookieAt500Calories(ingredients: Array[Ingredient]): (Int, Map[Int, Ingredient]) = {
+    val cookiesWith500Calories = cookieOptions(ingredients)
+      .filter(CookieRecipeComparer.has500Calories)
+
+    val cookieScores = cookiesWith500Calories.map(c => CookieRecipeComparer.score(c) -> c)
+
+    cookieScores.sortBy {case (score, ingredients) => score}
+      .last
   }
 }
