@@ -65,33 +65,76 @@ object SueParser {
     val fact = "(\\w+?): (\\d+?)".r
 
     facts
-      .map{case fact(k, v) => k -> v.toInt}
+      .map { case fact(k, v) => k -> v.toInt }
       .toMap
   }
 }
 
+// not sure if overengineering logic into so many separate objects is worth it but the
+// messiness hurts me
+object SueMatcher {
+  def matchExactly(sues: Day16Solution.Sues, f: SueParser.Fact): Day16Solution.Sues = {
+    val (factName, factValue) = f
+    sues.filter {
+      case (n, sueFacts) => {
+        val sueFactValue = sueFacts.get(factName)
+        sueFactValue.isEmpty || sueFactValue.get == factValue
+      }
+    }
+  }
+
+  def matchIntricately(sues: Day16Solution.Sues, f: SueParser.Fact): Day16Solution.Sues = {
+    val (factName, factValue) = f
+    sues.filter {
+      case (n, sueFacts) => {
+        val sueFactValue = sueFacts.get(factName)
+
+        sueFactValue match {
+          case None => true
+          case Some(v) =>
+            if (factName == "cats" || factName == "trees")
+              v > factValue
+            else if (factName == "pomeranians" || factName == "goldfish")
+              v < factValue
+            else
+              factValue == v
+        }
+      }
+    }
+  }
+}
+
 object Day16Solution {
+  type Sues = Map[Int, SueParser.Facts]
   def readInput(): Array[String] = {
     InputReader.ReadInput("Day16.txt").split("\n")
   }
 
-  def parseInput(lines: Array[String]): Map[Int,SueParser.Facts] = {
+  def parseInput(lines: Array[String]): Sues = {
     lines.map(SueParser.parse).toMap
   }
 
-  def findSue(facts: SueParser.Facts): Map[Int, Map[String, Int]] = {
+  def solvePart1(facts: SueParser.Facts) {
     val sues = parseInput(readInput())
-    // It's possible no Sue can be found with the given facts.
-    // But if we do a fuzzy search we might be able to narrow
-    // the result down to just one Sue.
-    facts.foldLeft(sues)(
-      (result, f) => {
-        val (factName, factValue) = f
-        result.filter{ case (n, sueFacts) => {
-                        val sueFactValue = sueFacts.get(factName)
-                        sueFactValue.isEmpty || sueFactValue.get == factValue
-                      }}
-      }
-    )
+    facts.foldLeft(sues)(SueMatcher.matchExactly)
+  }
+
+  // --- Part Two ---
+  //
+  // As you're about to send the thank you note, something in the MFCSAM's
+  // instructions catches your eye. Apparently, it has an outdated
+  // retroencabulator, and so the output from the machine isn't exact values -
+  // some of them indicate ranges.
+  //
+  // In particular, the cats and trees readings indicates that there are greater
+  // than that many (due to the unpredictable nuclear decay of cat dander and
+  // tree pollen), while the pomeranians and goldfish readings indicate that
+  // there are fewer than that many (due to the modial interaction of
+  // magnetoreluctance).
+  //
+  // What is the number of the real Aunt Sue?
+  def solvePart2(facts: SueParser.Facts): Sues = {
+    val sues = parseInput(readInput())
+    facts.foldLeft(sues)(SueMatcher.matchIntricately)
   }
 }
