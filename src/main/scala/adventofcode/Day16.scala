@@ -46,18 +46,11 @@
 //
 // What is the number of the Sue that got you the gift?
 
-object Day16Solution {
+object SueParser {
   type Fact = (String, Int)
+  type Facts = Map[String, Int]
 
-  def readInput(): Array[String] = {
-    InputReader.ReadInput("Day16.txt").split("\n")
-  }
-
-  def parseInput(lines: Array[String]): Map[Int,Map[String,Int]] = {
-    lines.map(parse).toMap
-  }
-
-  def parse(s: String): (Int, Map[String, Int]) = {
+  def parse(s: String): (Int, Facts) = {
     val sue = s"^Sue (\\d+): (.+?), (.+?), (.+?)$$".r
 
     s match {
@@ -68,16 +61,25 @@ object Day16Solution {
     }
   }
 
-  def parseFacts(facts: String*): List[Fact] = {
+  def parseFacts(facts: String*): Facts = {
     val fact = "(\\w+?): (\\d+?)".r
 
     facts
       .map{case fact(k, v) => k -> v.toInt}
-      .filter{case (k, v) => v != 0}
-      .toList
+      .toMap
+  }
+}
+
+object Day16Solution {
+  def readInput(): Array[String] = {
+    InputReader.ReadInput("Day16.txt").split("\n")
   }
 
-  def findSue(facts: List[Fact]) = {
+  def parseInput(lines: Array[String]): Map[Int,SueParser.Facts] = {
+    lines.map(SueParser.parse).toMap
+  }
+
+  def findSue(facts: SueParser.Facts): Map[Int, Map[String, Int]] = {
     val sues = parseInput(readInput())
     // It's possible no Sue can be found with the given facts.
     // But if we do a fuzzy search we might be able to narrow
@@ -86,8 +88,8 @@ object Day16Solution {
       (result, f) => {
         val (factName, factValue) = f
         result.filter{ case (n, sueFacts) => {
-                        val sueFactValue = sueFacts.getOrElse(factName, 0)
-                        sueFactValue == 0 || sueFactValue == factValue
+                        val sueFactValue = sueFacts.get(factName)
+                        sueFactValue.isEmpty || sueFactValue.get == factValue
                       }}
       }
     )
