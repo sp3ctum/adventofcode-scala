@@ -20,16 +20,37 @@ object Day17Solution {
 
   def solve(): Int = combinationsOfContainers(containerSizes, 150).length
 
-  def combinationsOfContainers(containers: List[Int], totalSize: Int): Iterator[List[(Int, Int)]] = {
+  def combinationsOfContainers(containers: List[Int], totalSize: Int): Iterator[List[Int]] = {
     // have to make the sizes unique so they are all taken into account
     // otherwise containers with the same size appear only once
     val uniqueContainers = containers.zipWithIndex
     for {
       i <- Iterator.range(1, containers.length)
       combination <- uniqueContainers.combinations(i)
-      if combination.map{case (n,index) => n}.sum == totalSize
+      if combination.map { case (n, index) => n }.sum == totalSize
     } yield {
-      combination.toList
+      combination.map { case (n, index) => n}.toList
     }
   }
+
+  // --- Part Two ---
+  //
+  // While playing with all the containers in the kitchen, another load of
+  // eggnog arrives! The shipping and receiving department is requesting as many
+  // containers as you can spare.
+  //
+  // Find the minimum number of containers that can exactly fit all 150 liters
+  // of eggnog. How many different ways can you fill that number of containers
+  // and still hold exactly 150 litres?
+  //
+  // In the example above, the minimum number of containers was two. There were
+  // three ways to use that many containers, and so the answer there would be 3.
+
+  def solvePart2(): (Int, List[List[Int]]) = {
+    val combinations = combinationsOfContainers(containerSizes, 150).toList
+    combinations
+      .groupBy(_.length)
+      .minBy { case (size, _) => size }
+  }
+
 }
