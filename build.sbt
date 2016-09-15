@@ -8,5 +8,4 @@ libraryDependencies += "commons-lang" % "commons-lang" % "2.6"
 
 // https://mvnrepository.com/artifact/org.json4s/json4s-jackson_2.11
 libraryDependencies += "org.json4s" % "json4s-jackson_2.11" % "3.4.0"
-//addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.15")
-wartremoverWarnings ++= Warts.unsafe
+addCompilerPlugin("org.psywerx.hairyfotr" %% "linter" % "0.1.15")
