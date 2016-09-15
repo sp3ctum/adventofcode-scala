@@ -26,11 +26,20 @@ class Day18Tests extends FunSuite {
     assert(GameOfLight.getNeighbors(3, 2, grid2) == List.fill(8)(true))
   }
 
-  test("advance the state of lights according to given example") {
+  test("advance the state of lights according to given example (part 1)") {
     assert(nextState(ExampleLightStates.initial) == ExampleLightStates.step1)
     assert(nextState(ExampleLightStates.step1) == ExampleLightStates.step2)
     assert(nextState(ExampleLightStates.step2) == ExampleLightStates.step3)
     assert(nextState(ExampleLightStates.step3) == ExampleLightStates.step4)
+  }
+
+  test("advance the state of lights according to given example (part 2)") {
+    def next = nextStateWithoutTouchingCorners _
+
+    assert(next(SecondExampleLightStates.initial) == SecondExampleLightStates.step1)
+    // assert(next(SecondExampleLightStates.step1) == SecondExampleLightStates.step2)
+    // assert(next(SecondExampleLightStates.step2) == SecondExampleLightStates.step3)
+    // assert(next(SecondExampleLightStates.step3) == SecondExampleLightStates.step4)
   }
 
   def parse(lines: String*): GameOfLight.Grid = {
@@ -52,6 +61,12 @@ class Day18Tests extends FunSuite {
   def nextState(grid: List[String]) = {
     val parsed = GameOfLight.parse(grid.toArray)
     val result = GameOfLight.getNextState(parsed)
+    serialize(result)
+  }
+
+  def nextStateWithoutTouchingCorners(grid: List[String]) = {
+    val parsed = GameOfLight.parse(grid.toArray)
+    val result = GameOfLight.getNextStateWithStuckCorners(parsed)
     serialize(result)
   }
 }
@@ -101,6 +116,62 @@ object ExampleLightStates {
   )
 }
 
+object SecondExampleLightStates {
+  val initial = List(
+    "##.#.#",
+    "...##.",
+    "#....#",
+    "..#...",
+    "#.#..#",
+    "####.#"
+  )
+
+  val step1 = List(
+    "#.##.#",
+    "####.#",
+    "...##.",
+    "......",
+    "#...#.",
+    "#.####"
+  )
+
+  val step2 = List(
+    "#..#.#",
+    "#....#",
+    ".#.##.",
+    "...##.",
+    ".#..##",
+    "##.###"
+  )
+
+  val step3 = List(
+    "#...##",
+    "####.#",
+    "..##.#",
+    "......",
+    "##....",
+    "####.#"
+  )
+
+  val step4 = List(
+    "#.####",
+    "#....#",
+    "...#..",
+    ".##...",
+    "#.....",
+    "#.#..#"
+  )
+
+  val step5 = List(
+    "##.###",
+    ".##..#",
+    ".##...",
+    ".##...",
+    "#.#...",
+    "##...#"
+  )
+}
+
 class Day18SolutionTests extends BaseSolutionTests {
   test("can parse input") {
     dontRunSolutionAutomatically {
@@ -114,8 +185,13 @@ class Day18SolutionTests extends BaseSolutionTests {
       Day18Solution.solveCountOfLightsOn()
       // res108: Int = 1061
       // took about 1-2 seconds
+    }
+  }
 
-      Iterator.iterate(0)(n => n + 1).take(2).toList
+  test("solve part2") {
+    dontRunSolutionAutomatically {
+      Day18Solution.solveCountOfLightsOnPart2()
+      // res114: Int = 1006
     }
   }
 }

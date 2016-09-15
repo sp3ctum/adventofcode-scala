@@ -101,11 +101,35 @@ object GameOfLight {
   }
 
   def getNextState(grid: Grid): Grid = {
+    modifyCells(
+      grid,
+      (light, x, y) => switchLight(light, x, y, grid)
+    )
+  }
+
+  def getNextStateWithStuckCorners(grid: Grid): Grid = {
+    val width = grid.head.length - 1
+    val height = grid.length - 1
+
+    val corners = Set((0, 0), (0, height), (width, 0), (width, height))
+
+    modifyCells(
+      grid,
+      (light, x, y) => {
+        if (corners.contains((x, y)))
+          true
+        else
+          switchLight(light, x, y, grid)
+      }
+    )
+  }
+
+  private def modifyCells(grid: Grid, f: (Boolean, Int, Int) => Boolean): Grid = {
     grid.zipWithIndex.par.map {
       case (line, y) => {
         line.zipWithIndex.map {
           case (light, x) => {
-            switchLight(light, x, y, grid)
+            f(light, x, y)
           }
         }
       }
@@ -140,11 +164,21 @@ object Day18Solution {
   def parseInput(input: Array[String]): GameOfLight.Grid =
     GameOfLight.parse(input)
 
+  val steps = 100
+
   def solveCountOfLightsOn(): Int = {
     val initialGrid = parseInput(readInput())
-    val steps = 100
 
     val finalGrid = Iterator.iterate(initialGrid)(GameOfLight.getNextState)
+      .take(steps + 1).toList.last
+
+    finalGrid.map(line => line.count(_ == true)).sum
+  }
+
+  def solveCountOfLightsOnPart2(): Int = {
+    val initialGrid = parseInput(readInput())
+
+    val finalGrid = Iterator.iterate(initialGrid)(GameOfLight.getNextStateWithStuckCorners)
       .take(steps + 1).toList.last
 
     finalGrid.map(line => line.count(_ == true)).sum
