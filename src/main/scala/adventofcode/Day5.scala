@@ -32,7 +32,7 @@ object NiceStringDeterminer {
   }
 
   def ContainsThreeRequiredVowels(s: String): Boolean = {
-    s.count(c => "aeiou".exists{c == _}) >= 3
+    s.count(c => "aeiou".contains(c)) >= 3
   }
 
   def ContainsDoubleLetter(s: String): Boolean = {

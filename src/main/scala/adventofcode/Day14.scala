@@ -67,10 +67,10 @@ object Day14Solution {
     val input = readInput()
     val reindeer = """^(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.$""".r
 
-    input.map(r => r match {
-                case reindeer(name, flyspeed, flytime, restTime) =>
-                  Reindeer(name, Flying(flyspeed.toInt, flytime.toInt), restTime.toInt)
-              })
+    input.map{
+      case reindeer(name, flyspeed, flytime, restTime) =>
+        Reindeer(name, Flying(flyspeed.toInt, flytime.toInt), restTime.toInt)
+    }
   }
 
   def solve(): (Reindeer, Int) = {
@@ -109,7 +109,7 @@ object Day14Solution {
     val reindeers = parseInput()
     val finishTime = 2503
     val points = ReindeerPointCalculator.getRaceStatusAtSeconds(reindeers, finishTime)
-    points.toList.sortBy {case (r, points) => points}.last
+    points.toList.maxBy {case (r, points) => points}
   }
 }
 
@@ -118,7 +118,7 @@ object ReindeerPointCalculator {
     val points = getRaceStatusAtSeconds(reindeers, time)
     points.toList.sortWith {
       case ((_reindeer,points), (_, points2)) => points > points2
-    }.toList.head
+    }.head
   }
 
   def getRaceStatusAtSeconds(reindeers: List[Reindeer], finishTime: Int): Map[Reindeer, Int] = {
