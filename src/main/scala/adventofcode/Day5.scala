@@ -32,8 +32,7 @@ object NiceStringDeterminer {
   }
 
   def ContainsThreeRequiredVowels(s: String): Boolean = {
-    s.filter(c => "aeiou".exists{c == _})
-      .length() >= 3
+    s.count(c => "aeiou".exists{c == _}) >= 3
   }
 
   def ContainsDoubleLetter(s: String): Boolean = {
@@ -74,8 +73,7 @@ object NiceStringDeterminer2 {
 object Day5Solution {
   def HowManyStringsAreNice(): Int = {
     val input = GetInput()
-    input.filter(NiceStringDeterminer.IsNice)
-      .length
+    input.count(NiceStringDeterminer.IsNice)
   }
 
   private def GetInput(): Array[String] = {
@@ -112,7 +110,6 @@ object Day5Solution {
 
   def HowManyStringsAreNicePart2(): Int = {
     val input = GetInput()
-    input.filter(NiceStringDeterminer2.IsNice)
-      .length
+    input.count(NiceStringDeterminer2.IsNice)
   }
 }

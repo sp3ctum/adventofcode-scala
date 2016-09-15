@@ -100,7 +100,7 @@ object Circuit {
 
   private val wire = "([a-z]+)".r
   private val number = "([0-9]+)".r
-  private val wireOrNumber = s"([a-z0-9]+)".r
+  private val wireOrNumber = "([a-z0-9]+)".r
 
   private def ushort(v: String): UShort = UShort(v.toInt)
 }

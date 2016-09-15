@@ -51,12 +51,12 @@ object SueParser {
   type Facts = Map[String, Int]
 
   def parse(s: String): (Int, Facts) = {
-    val sue = s"^Sue (\\d+): (.+?), (.+?), (.+?)$$".r
+    val sue = "^Sue (\\d+): (.+?), (.+?), (.+?)$$".r
 
     s match {
       case sue(sueNumber, fa, fb, fc) => {
         val facts = parseFacts(fa, fb, fc)
-        sueNumber.toInt -> facts.toMap
+        sueNumber.toInt -> facts
       }
     }
   }
@@ -89,16 +89,13 @@ object SueMatcher {
       case (n, sueFacts) => {
         val sueFactValue = sueFacts.get(factName)
 
-        sueFactValue match {
-          case None => true
-          case Some(v) =>
-            if (factName == "cats" || factName == "trees")
-              v > factValue
-            else if (factName == "pomeranians" || factName == "goldfish")
-              v < factValue
-            else
-              factValue == v
-        }
+        sueFactValue forall (v =>
+          if (factName == "cats" || factName == "trees")
+            v > factValue
+          else if (factName == "pomeranians" || factName == "goldfish")
+            v < factValue
+          else
+            factValue == v)
       }
     }
   }

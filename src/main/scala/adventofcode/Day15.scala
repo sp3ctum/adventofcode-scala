@@ -90,8 +90,7 @@ object CookieRecipeComparer {
     val options = cookieOptions(ingredients)
 
     val cookieScores = options.map(c => CookieRecipeComparer.score(c) -> c)
-    cookieScores.sortBy {case (score, ingredients) => score}
-      .last
+    cookieScores maxBy {case (score, ingredients) => score}
   }
 
   def hundredInGroups(groups: Int): IndexedSeq[List[Int]] = {
@@ -120,7 +119,7 @@ object CookieRecipeComparer {
     */
   def cookieOptions(ingredients: Array[Ingredient]): IndexedSeq[CookieIngredients] = {
     val amountOptions = hundredInGroups(ingredients.length)
-    amountOptions.map(a => a.zip(ingredients).toList)
+    amountOptions.map(a => a.zip(ingredients))
   }
 
   def bestCookieAt500Calories(ingredients: Array[Ingredient]): (Int, CookieIngredients) = {
@@ -129,8 +128,7 @@ object CookieRecipeComparer {
 
     val cookieScores = cookiesWith500Calories.map(c => CookieRecipeComparer.score(c) -> c)
 
-    cookieScores.sortBy {case (score, ingredients) => score}
-      .last
+    cookieScores maxBy {case (score, ingredients) => score}
   }
 }
 

@@ -37,8 +37,10 @@ abstract class Direction
 case class Up() extends Direction
 case class Down() extends Direction
 
-case class SantasJourneyStatus(takenDirections: List[Direction] = List(),
-                               currentFloor: Int = 0)
+case class SantasJourneyStatus(
+  takenDirections: List[Direction] = List(),
+  currentFloor: Int = 0
+)
 
 object Directions {
   def CalculateFloor(directions: List[Direction]): Int = {
@@ -64,17 +66,19 @@ object Directions {
   private def FloorChanges(directions: List[Direction]): List[SantasJourneyStatus] = {
     directions.scanLeft(SantasJourneyStatus())(
       (result, newDirection) => {
-        result.copy(takenDirections = result.takenDirections :+ newDirection,
-                    currentFloor = result.currentFloor + DirectionToInt(newDirection))
-      })
+        result.copy(
+          takenDirections = result.takenDirections :+ newDirection,
+          currentFloor = result.currentFloor + DirectionToInt(newDirection)
+        )
+      }
+    )
   }
 
   def Parse(input: String): List[Direction] = {
-    input.map{_ match {
-                case '(' => Up()
-                case ')' => Down()
-              }}
-      .toList
+    input.map {
+      case '(' => Up()
+      case ')' => Down()
+    }.toList
   }
 }
 

@@ -29,7 +29,7 @@ object Day17Solution {
       combination <- uniqueContainers.combinations(i)
       if combination.map { case (n, index) => n }.sum == totalSize
     } yield {
-      combination.map { case (n, index) => n}.toList
+      combination.map { case (n, index) => n}
     }
   }
 

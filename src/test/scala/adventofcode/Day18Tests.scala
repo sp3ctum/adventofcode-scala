@@ -47,10 +47,9 @@ class Day18Tests extends FunSuite {
   }
 
   def serialize(grid: GameOfLight.Grid) = {
-    grid.map(line => line.map {
-      case true => '#'
-      case false => '.'
-    }.mkString).toList
+    grid.map(line => line.map(light =>
+      if (light == true) '#'
+      else '.').mkString).toList
   }
 
   def print(grid: GameOfLight.Grid): Unit = {

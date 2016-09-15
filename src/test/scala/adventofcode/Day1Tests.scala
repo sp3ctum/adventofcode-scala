@@ -1,7 +1,7 @@
 import org.scalatest.{ Canceled, FunSuite, Ignore }
 
 class BaseSolutionTests extends FunSuite {
-  def dontRunSolutionAutomatically(block: => Unit): Unit = {
+  def dontRunSolutionAutomatically(block: => Unit): Unit = { // linter:ignore UnusedParameter
     // things marked with this should be run in the repl or with a main method
     // somewhere
     cancel("not running solution automatically so test run is not too slow")

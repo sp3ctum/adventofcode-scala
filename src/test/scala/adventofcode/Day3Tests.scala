@@ -2,7 +2,7 @@ import org.scalatest.FunSuite
 
 class Day3Tests extends FunSuite {
   test("parsing input") {
-    val input = "^>v<".map(SantaDirection.Parse)
+    val input = "^>v<".map(SantaDirection.Parse).toList
     assert(input == List(North(), East(), South(), West()))
   }
 
