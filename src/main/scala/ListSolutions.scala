@@ -41,7 +41,7 @@ object OneLinerListSolutions {
   def flatten[A](result: List[Any]): List[Any] = {
     result match {
       case Nil => result
-      case (l: List[Any]) :: rest => flatten(l) ::: flatten(rest)
+      case (l: List[Any]) :: rest => flatten(l) ::: flatten(rest) // linter:ignore
       case l :: rest => l :: flatten(rest)
     }
   }
@@ -67,12 +67,14 @@ object OneLinerListSolutions {
 
   // P09 (**) Pack consecutive duplicates of list elements into sublists.
   @tailrec
-  def duplicatesToSublists[T](remaining: List[T],
-                              result: List[List[T]] = List()): List[List[T]] = {
+  def duplicatesToSublists[T](
+    remaining: List[T],
+    result: List[List[T]] = List()
+  ): List[List[T]] = {
     remaining match {
       case Nil => result
       case x :: xs => {
-        val (sames, rest) = xs span{x == _}
+        val (sames, rest) = xs span { x == _ }
         duplicatesToSublists(rest, result ::: List(x :: sames))
       }
     }
@@ -98,10 +100,10 @@ object OneLinerListSolutions {
 
   def modifiedRunLengthEncoding[T](l: List[T]): List[RunLengthEncoded[T]] = {
     runLengthEncode(l)
-      .map (group => group match {
-              case (1, value) => One(value)
-              case (count, value) => Many(value, count)
-            })
+      .map {
+        case (1, value) => One(value)
+        case (count, value) => Many(value, count)
+      }
   }
 
   // P12 (**) Decode a run-length encoded list.
@@ -111,9 +113,9 @@ object OneLinerListSolutions {
   // res0: List[Symbol] = List('a, 'a, 'a, 'a, 'b, 'c, 'c, 'a, 'a, 'd, 'e, 'e, 'e, 'e)
   def decodeRunLengthEncoded[T](l: List[(Int, T)]): List[T] = {
     l.map(group => {
-            val (count, item) = group
-            List.fill(count)(item)
-          })
+      val (count, item) = group
+      List.fill(count)(item)
+    })
       .flatten
   }
 
@@ -130,10 +132,12 @@ object OneLinerListSolutions {
     // Seems like this requires a solution that's not optimal;
     // Meaning it must do everything in the same loop instead of using higher
     // order functions like my version of runLengthEncode.
-    def encode(result: List[(Int, T)],
-               remaining: List[T],
-               previousItem: T,
-               successiveItemsCount: Int): List[(Int, T)] = {
+    def encode(
+      result: List[(Int, T)],
+      remaining: List[T],
+      previousItem: T,
+      successiveItemsCount: Int
+    ): List[(Int, T)] = {
       remaining match {
         case Nil => (successiveItemsCount, previousItem) :: result
         case newItem :: rest =>
@@ -158,7 +162,7 @@ object OneLinerListSolutions {
 
   // P16 (**) Drop every Nth element from a list.
   def dropEveryNthElement[T](l: List[T], n: Int): List[T] = {
-    l.zipWithIndex.collect{
+    l.zipWithIndex.collect {
       case (x, i) if ((i + 1) % n != 0) => x
     }
   }
@@ -173,11 +177,12 @@ object OneLinerListSolutions {
   def rotateToLeft[T](n: Int, l: List[T]): List[T] = {
     val input = l.toVector // optimization
 
-    l.zipWithIndex.map{case (x, index) => {
-                         // overflow will go around and search from the beginning / end
-                         val newIndex = (index + n) % input.length
-                         input(newIndex)
-                       }
+    l.zipWithIndex.map {
+      case (x, index) => {
+        // overflow will go around and search from the beginning / end
+        val newIndex = (index + n) % input.length
+        input(newIndex)
+      }
     }
   }
 
@@ -197,13 +202,13 @@ object OneLinerListSolutions {
   def range(start: Int, end: Int): List[Int] = List.range(start, end)
 
   // P23 (**) Extract a given number of randomly selected elements from a list.
-  def randoms[T](source: List[T], count: Int): List[T] = {
+  def randoms[T](source: List[T]): List[T] = {
     val random = new Random()
 
-    source.map{_ =>
+    source.map { _ =>
       val index = random.nextInt(source.length)
       source(index)
-    }.toList
+    }
   }
 
   // P24 (*) Lotto: Draw N different random numbers from the set 1..M.

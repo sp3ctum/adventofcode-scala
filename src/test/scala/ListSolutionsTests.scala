@@ -47,7 +47,7 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   }
 
   test("flatten a list of lists") {
-    val nestedList = List(List(1, 2), 3, 4, List(5, 6))
+    val nestedList: List[Any] = List(List(1, 2), 3, 4, List(5, 6))
     assert(OneLinerListSolutions.flatten(nestedList) == List(1, 2, 3, 4, 5, 6))
   }
 
@@ -111,7 +111,7 @@ class OneLinerListSolutionsTests extends FunSuite with Timeouts {
   test("split a list into two parts") {
     val input = "abcdefghijk"
     assert(OneLinerListSolutions.splitIntoTwoParts(3, input)
-             == (("abc".toList, "defghijk".toList)))
+             == (("abc".toIndexedSeq, "defghijk".toIndexedSeq)))
   }
 
   test("slice a list") {
