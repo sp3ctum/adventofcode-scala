@@ -41,7 +41,7 @@ object NiceStringDeterminer {
   }
 
   def ContainsDisallowedString(s: String): Boolean = {
-    List("ab", "cd", "pq", "xy").exists(s.contains(_))
+    List("ab", "cd", "pq", "xy").exists(s.contains)
   }
 }
 
