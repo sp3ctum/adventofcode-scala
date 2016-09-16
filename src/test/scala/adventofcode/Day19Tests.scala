@@ -36,10 +36,10 @@ class Day19Tests extends FunSuite {
     val replacements = Map("H" -> List("HO", "OH"), "O" -> List("HH"))
     val molecules = TokenParser.tokenize("HOH", replacements.map(_._1).toSet)
 
-    // TokenParser.replacements(molecules, replacements)
+    Day19Solution.replacements(molecules, replacements)
     // res13: scala.collection.immutable.Set[List[String]] = Set(List(HO, OH), List(HH))
 
-    // assert(TokenParser.replacements(molecules, replacements) eq Set("HOOH", "HOHO", "OHOH", "HHHH"))
+    assert(Day19Solution.replacements(molecules, replacements) eq Set("HOOH", "HOHO", "OHOH", "HHHH"))
   }
 }
 

@@ -149,7 +149,10 @@ object Day19Solution {
 
   /** for one step of replacing */
   def replacements(molecules: List[MoleculeToken], transformations: Map[String, List[String]]) = {
-    ???
+    molecules.map{
+      case UnknownMolecule(position, text) => text
+      case KnownMolecule(position, text) => transformations(text)
+    }
     // molecules.map(m => transformations(m.text))
   }
 }
