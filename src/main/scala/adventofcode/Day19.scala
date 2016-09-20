@@ -48,9 +48,9 @@ import scala.annotation.tailrec
 // can do one replacement on the medicine molecule?
 //
 
-sealed abstract class MoleculeToken(position: Int, text: String)
-case class UnknownMolecule(position: Int, text: String) extends MoleculeToken(position, text)
-case class KnownMolecule(position: Int, text: String) extends MoleculeToken(position, text)
+sealed abstract class MoleculeToken(val position: Int, val text: String)
+case class UnknownMolecule(override val position: Int, override val text: String) extends MoleculeToken(position, text)
+case class KnownMolecule(override val position: Int, override val text: String) extends MoleculeToken(position, text)
 
 object TokenParser {
   private case class ParserState(
@@ -67,9 +67,9 @@ object TokenParser {
     val tokens = molecules.toList.sortBy(_.length()).reverse
 
     @tailrec
-    def parseTokens(state: ParserState): List[MoleculeToken] = {
+    def parseTokens(state: ParserState): Vector[MoleculeToken] = {
       if (state.position == s.length())
-        state.result
+        state.result.toVector
       else {
         val remaining = s.substring(state.position, s.length())
 
@@ -108,7 +108,7 @@ object TokenParser {
 }
 
 object Day19Solution {
-  val targetMolecule = "CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSi" +
+  val medicineMolecule = "CRnSiRnCaPTiMgYCaPTiRnFArSiThFArCaSiThSiThPBCaCaSi" +
     "RnSiRnTiTiMgArPBCaPMgYPTiRnFArFArCaSiRnBPMgArPRnCaPTiRnFArCaSiThCaCaF" +
     "ArPBCaCaPTiTiRnFArCaSiRnSiAlYSiThRnFArArCaSiRnBFArCaCaSiRnSiThCaCaCaF" +
     "YCaPTiBCaSiThCaSiThPMgArSiRnCaPBFYCaCaFArCaCaCaCaSiThCaSiRnPRnFArPBSi" +
@@ -131,28 +131,30 @@ object Day19Solution {
   ).groupBy { case (k, v) => k }
     .mapValues(values => values.map { case (k, v) => v })
 
-  // replacementMolecules.toList.sortBy(_._1)
-  // List(
-  // (Al,List(ThF, ThRnFAr)),
-  // (B,List(BCa, TiB, TiRnFAr)),
-  // (Ca,List(CaCa, PB, PRnFAr, SiRnFYFAr, SiRnMgAr, SiTh)),
-  // (F,List(CaF, PMg, SiAl)),
-  // (H,List(CRnAlAr, CRnFYFYFAr, CRnFYMgAr, CRnMgYFAr, HCa, NRnFYFAr, NRnMgAr, NTh, OB, ORnFAr)),
-  // (Mg,List(BF, TiMg)),
-  // (N,List(CRnFAr, HSi)),
-  // (O,List(CRnFYFAr, CRnMgAr, HP, NRnFAr, OTi)),
-  // (P,List(CaP, PTi, SiRnFAr)),
-  // (Si,List(CaSi)),
-  // (Th,List(ThCa)),
-  // (Ti,List(BP, TiTi)),
-  // (e,List(HF, NAl, OMg)))
-
   /** for one step of replacing */
-  def replacements(molecules: List[MoleculeToken], transformations: Map[String, List[String]]) = {
-    molecules.map{
-      case UnknownMolecule(position, text) => text
-      case KnownMolecule(position, text) => transformations(text)
+  def replacements(
+    inputMolecules: Vector[MoleculeToken],
+    transformations: Map[String, List[String]]
+  ): Set[String] = {
+    val possibleResultMolecules = inputMolecules.map(m => m.text)
+
+    val replacements = inputMolecules.zipWithIndex.collect {
+      case (KnownMolecule(position, text), i) => {
+        val newMolecules = transformations(text)
+        newMolecules
+          .map(m => possibleResultMolecules
+            .updated(i, m)
+            .mkString)
+      }
     }
-    // molecules.map(m => transformations(m.text))
+
+    replacements.flatten.toSet
+  }
+
+  def solvePart1PossibleMolecules(): Set[String] = {
+    val moleculeNames = replacementMolecules.map(_._1).toSet
+    val molecules = TokenParser.tokenize(medicineMolecule, moleculeNames)
+
+    replacements(molecules, replacementMolecules)
   }
 }
