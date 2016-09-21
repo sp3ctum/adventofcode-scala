@@ -140,15 +140,24 @@ object Day19Solution {
 
     val replacements = inputMolecules.zipWithIndex.collect {
       case (KnownMolecule(position, text), i) => {
-        val newMolecules = transformations(text)
-        newMolecules
-          .map(m => possibleResultMolecules
-            .updated(i, m)
-            .mkString)
+        moleculeTransformations(transformations, possibleResultMolecules, text, i)
       }
     }
 
     replacements.flatten.toSet
+  }
+
+  private def moleculeTransformations(
+    transformations: Map[String, List[String]],
+    possibleResultMolecules: Vector[String],
+    text: String,
+    i: Int
+  ): List[String] = {
+    val newMolecules = transformations(text)
+    newMolecules
+      .map(m => possibleResultMolecules
+        .updated(i, m)
+        .mkString)
   }
 
   def solvePart1PossibleMolecules(): Set[String] = {
